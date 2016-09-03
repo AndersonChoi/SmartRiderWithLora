@@ -33,6 +33,9 @@ This is a sample application showing how to deploy a simple Flask-based hello wo
   $ cf push
   ```
 
+  ### in wonyoung case
+  ### sudo cf push SRadmin
+
 And voila! You now have your very own instance of the Python Hello World sample app running on Bluemix.
 
 ## Run the app locally
@@ -110,3 +113,4 @@ This app is covered by the Apache 2.0 license. For more information, see [Licens
 [download_python_url]: https://www.python.org/downloads/
 [virtualenv_url]: https://virtualenv.pypa.io/en/stable/
 [issues_url]: https://github.com/IBM-Bluemix/python-hello-world-flask/issues
+

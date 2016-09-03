@@ -25,6 +25,10 @@
             });
 
 
+            //{% for i in data %}
+            //{{ i["sns"] }}
+            //{% endfor %}
+
 
             var myLatlng = new google.maps.LatLng(35.232136,129.083543);
             var marker = new google.maps.Marker({
@@ -131,7 +135,32 @@
             async defer></script>
 
 
-    <hr>
+    <h1 class="page-header"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;사용자 리스트</h1>
+
+
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>사용자 아이디</th>
+            <th>최근 실행 시간</th>
+            <th>SNS</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for i in data %}
+            <tr>
+                <td>{{ i["id"] }}</td><td>None</td></td><td>{{ i["sns"] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+
+
+
+
 
     <hr>
     <footer>

@@ -2,6 +2,9 @@
 from flask import Flask, render_template
 import cf_deployment_tracker
 import os
+import urllib2
+import simplejson
+
 
 # Emit Bluemix deployment event
 cf_deployment_tracker.track()
@@ -15,6 +18,14 @@ port = int(os.getenv('VCAP_APP_PORT', 8080))
 @app.route('/')
 def home():
   return render_template('index.html')
+
+
+@app.route('/sns')
+def sns():
+    response = urllib2.urlopen("http://testweb.mybluemix.net/api/members")
+    data = simplejson.load(response)
+    return render_template('index.html',data=data)
+
 
 
 
