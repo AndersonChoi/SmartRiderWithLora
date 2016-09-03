@@ -14,19 +14,11 @@ app = Flask(__name__)
 # When running this app on the local machine, default the port to 8080
 port = int(os.getenv('VCAP_APP_PORT', 8080))
 
-
 @app.route('/')
 def home():
-  return render_template('index.html')
-
-
-@app.route('/sns')
-def sns():
     response = urllib2.urlopen("http://testweb.mybluemix.net/api/members")
     data = simplejson.load(response)
     return render_template('index.html',data=data)
-
-
 
 
 if __name__ == '__main__':
