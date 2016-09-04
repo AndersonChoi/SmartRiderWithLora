@@ -30,18 +30,14 @@
 
 ###Pages
 * 담당자 : 금정산라이더스
-
-> * [SR 위키 메인페이지](https://github.com/AndersonChoi/SmartRiderWithLora/wiki/SR---%EC%9C%84%ED%82%A4-%EB%A9%94%EC%9D%B8%ED%8E%98%EC%9D%B4%EC%A7%80)
+  * [SR 위키 메인페이지](https://github.com/AndersonChoi/SmartRiderWithLora/wiki/SR---%EC%9C%84%ED%82%A4-%EB%A9%94%EC%9D%B8%ED%8E%98%EC%9D%B4%EC%A7%80)
 
 * 담당자 : 김창현
-
-> * [SR DB Interface](https://github.com/AndersonChoi/SmartRiderWithLora/wiki/SR-DB-Interface)
+  * [SR DB Interface](https://github.com/AndersonChoi/SmartRiderWithLora/wiki/SR-DB-Interface)
 
 * 담당자 : 박정빈
-
-> * [SR LoRa 통신](https://github.com/AndersonChoi/SmartRiderWithLora/wiki/SR-LoRa-%ED%86%B5%EC%8B%A0)
+  * [SR LoRa 통신](https://github.com/AndersonChoi/SmartRiderWithLora/wiki/SR-LoRa-%ED%86%B5%EC%8B%A0)
 
 * 담당자 : 최원영
-
-> * [SR 관리자 웹페이지 시스템](https://github.com/AndersonChoi/SmartRiderWithLora/wiki/SR-%EA%B4%80%EB%A6%AC%EC%9E%90-%EC%9B%B9%ED%8E%98%EC%9D%B4%EC%A7%80-%EC%8B%9C%EC%8A%A4%ED%85%9C)
-* [SR 라이더 안드로이드 시스템](https://github.com/AndersonChoi/SmartRiderWithLora/wiki/SR-%EB%9D%BC%EC%9D%B4%EB%8D%94-%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C)
+  * [SR 관리자 웹페이지 시스템](https://github.com/AndersonChoi/SmartRiderWithLora/wiki/SR-%EA%B4%80%EB%A6%AC%EC%9E%90-%EC%9B%B9%ED%8E%98%EC%9D%B4%EC%A7%80-%EC%8B%9C%EC%8A%A4%ED%85%9C)
+  * [SR 라이더 안드로이드 시스템](https://github.com/AndersonChoi/SmartRiderWithLora/wiki/SR-%EB%9D%BC%EC%9D%B4%EB%8D%94-%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C)
