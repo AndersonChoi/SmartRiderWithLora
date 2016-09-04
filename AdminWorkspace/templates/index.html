@@ -5,13 +5,35 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-    <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-    <!-- Latest compiled and minified JavaScript -->
+    <link rel="stylesheet" href="/static/stylesheets/style.css">
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="/static/js/canvasjs.min.js"></script>
+
+
     <script language="javascript">
         function loadMainPage() {
+            var chart = new CanvasJS.Chart("chartContainer",
+            {
+                theme: "theme2",
+                animationEnabled: true,
+                data: [
+                {
+                    type: "pie",
+                    indexLabelFontColor: "MistyRose",
+                    indexLabelLineColor: "darkgrey",
+                    indexLabelPlacement: "inside",
+                    dataPoints: [
+                        {  y: 5, exploded: true, indexLabel: "Activate" },
+                        {  y: 2, indexLabel: "Close" }
+                    ]
+                }
+                ]
+            });
+            chart.render();
+
+
         }
 
         var map;
@@ -86,6 +108,14 @@
 
 
 
+
+
+
+
+
+
+
+
     </script>
 
 
@@ -126,40 +156,91 @@
     </div>
 
 
-    <h1 class="page-header"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>&nbsp;전동휠 위치 Google
-        Map</h1>
+    <h1 class="page-header"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>&nbsp;전동휠 status</h1>
+
+    <div class="row">
+        <div class="col-md-7">
+
+            <div id="map" style="width:100%; height:500px;"></div>
 
 
-    <div id="map" style="width:100%;height:500px;"></div>
+        </div>
+
+        <div class="col-md-5">
+            <table class="table table-hover" style="width:100%; height:240px;">
+                <thead>
+                <tr class="info">
+                    <th>ID</th>
+                    <th>Location</th>
+                    <th>SNS</th>
+                </tr>
+                </thead>
+                <tbody style="overflow-y: scroll;height: 225px;width: 94%;position: absolute;">
+
+                <tr>
+                    <td>idssdf1</td>
+                    <td>Nosadfsfne</td>
+                    <td>snasdfass1</td>
+                </tr>
+
+                <tr>
+                    <td>idsadf2</td>
+                    <td>Nosadfafsane</td>
+                    <td>snsasfdsf2</td>
+                </tr>
+
+                <tr>
+                    <td>id2sdf3</td>
+                    <td>Nonasfsadfe</td>
+                    <td>snssdvdv3</td>
+                </tr>
+
+                <tr>
+                    <td>idsv4</td>
+                    <td>Nondsve</td>
+                    <td>snsvasdv4</td>
+                </tr>
+
+                <tr>
+                    <td>id5</td>
+                    <td>None</td>
+                    <td>sns5</td>
+                </tr>
+
+                <tr>
+                    <td>id5</td>
+                    <td>Noasvne</td>
+                    <td>sns5</td>
+                </tr>
+                <tr>
+                    <td>id5</td>
+                    <td>Nosdvne</td>
+                    <td>snavsvs5</td>
+                </tr>
+                <!--
+                {% for i in data %}
+                <tr>
+                    <td>{{ i["id"] }}</td><td>None</td></td><td>{{ i["sns"] }}</td>
+                </tr>
+                {% endfor %}
+
+                -->
+                </tbody>
+            </table>
+            <div class="row" id="chartContainer" style="height: 240px; width: 100%;">
+
+            </div>
+
+
+        </div>
+    </div>
+
+
     <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAhL4TBUX1yFnwJ9n3fLrCcMsWIKmGQ6cA&callback=initMap"
             async defer></script>
 
 
     <h1 class="page-header"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;사용자 리스트</h1>
-
-
-
-    <table class="table table-hover">
-        <thead>
-        <tr>
-            <th>사용자 아이디</th>
-            <th>최근 실행 시간</th>
-            <th>SNS</th>
-        </tr>
-        </thead>
-        <tbody>
-            {% for i in data %}
-            <tr>
-                <td>{{ i["id"] }}</td><td>None</td></td><td>{{ i["sns"] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-
-
-
-
 
 
     <hr>
