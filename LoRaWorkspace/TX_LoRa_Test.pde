@@ -5,7 +5,7 @@
 
 // Wait Receive GPS signa l during Timeout(seconds)
 //#define TIMEOUT 90
-#define TIMEOUT 30 //test
+#define TIMEOUT 5 //test
 // Define the Waspmote ID
 char nodeID[] = "INC_Node_01";
 
@@ -17,6 +17,8 @@ int8_t lora_status;
 bool gps_status;
 
 char sensorFile[] = "SENSOR.TXT";
+
+int cnt = 0;
 
 //double distance = 0;
 
@@ -59,6 +61,11 @@ void setup()
   lora_status = sx1272.setNodeAddress(2);
   USB.print(F("Setting Node Address to '2'.\t state "));
   USB.println(lora_status);
+  
+  // Select the maximum number of retries: from '0' to '5'
+  lora_status = sx1272.setRetries(3);
+  USB.print(F("Setting Retries to '3'.\t\t state "));
+  USB.println(lora_status);
   USB.println();
   
   delay(1000);  
@@ -70,6 +77,44 @@ void setup()
 
 void loop()
 {
+    // Detect a movement
+  //  move_state = ACC.();
+  
+  /*
+  if(move_state == true){     // Moving
+    PWR.deepSleep("00:00:00:20"RTC_OFFSET,RTC_ALM1_MODE1,ALL_OFF);
+  } else{                     // Stopping
+    if (distance < 540)
+      PWR.deepSleep("00:00:01:00"RTC_OFFSET,RTC_ALM1_MODE1,ALL_OFF);
+    else if (540 <= distance && distance < 900)
+      PWR.deepSleep("00:00:02:00"RTC_OFFSET,RTC_ALM1_MODE1,ALL_OFF);
+    else if (900 <= distance && distance < 1260)
+      PWR.deepSleep("00:00:03:00"RTC_OFFSET,RTC_ALM1_MODE1,ALL_OFF);
+    else if (1260 <= distance && distance < 1620)
+      PWR.deepSleep("00:00:04:00"RTC_OFFSET,RTC_ALM1_MODE1,ALL_OFF);
+    else if (1620 <= distance && distance < 1980)  
+      PWR.deepSleep("00:00:05:00"RTC_OFFSET,RTC_ALM1_MODE1,ALL_OFF);
+    else if (1980 <= distance && distance < 2340)  
+      PWR.deepSleep("00:00:06:00"RTC_OFFSET,RTC_ALM1_MODE1,ALL_OFF);
+    else if (2340 <= distance && distance < 2770)  
+      PWR.deepSleep("00:00:07:00"RTC_OFFSET,RTC_ALM1_MODE1,ALL_OFF);
+    else if (2770 <= distance && distance < 3060)  
+      PWR.deepSleep("00:00:08:00"RTC_OFFSET,RTC_ALM1_MODE1,ALL_OFF);
+    else if (3060 <= distance && distance < 3420)  
+      PWR.deepSleep("00:00:09:00"RTC_OFFSET,RTC_ALM1_MODE1,ALL_OFF);
+    else if (3420 <= distance)  
+      PWR.deepSleep("00:00:10:00"RTC_OFFSET,RTC_ALM1_MODE1,ALL_OFF);
+  }
+  */
+  if (cnt!=0){
+    USB.println(F("\nsleep.................\n"));
+    PWR.deepSleep("00:00:00:10",RTC_OFFSET,RTC_ALM1_MODE1,ALL_OFF);
+    setup();
+  }
+  else {
+    cnt++;
+  }
+  
   // GPS_1. Wait for GPS signal for specific time
   USB.println(F("Searching GPS.................."));
   gps_status = GPS.waitForSignal(TIMEOUT);
@@ -150,21 +195,38 @@ void loop()
   }
   
   frame.addSensor(SENSOR_ACC, acc_x, acc_y, acc_z);
-//  frame.addSensor(SENSOR_BAT, PWR.gatBatteryLevel());
+  frame.addSensor(SENSOR_BAT, PWR.getBatteryLevel());
   
   frame.addSensor(SENSOR_DATE, RTC.date, RTC.month, RTC.year);
   frame.addSensor(SENSOR_TIME, RTC.hour, RTC.minute, RTC.second);
+  
+  //string a
+  
+  frame.addSensor(SENSOR_NUM, cnt++);
  
   // Prints frame
   frame.showFrame();
 
   // Sending packet before ending a timeout
-  lora_status = sx1272.sendPacketTimeout( meshlium, frame.buffer, frame.length );
+  lora_status = sx1272.sendPacketTimeoutACKRetries( meshlium, frame.buffer, frame.length );
+  //lora_status = sx1272.sendPacketTimeout( meshlium, frame.buffer, frame.length );
   
   // Check sending status
   if( lora_status == 0 ) 
   {
     USB.println(F("Packet sent OK"));     
+    
+    lora_status = sx1272.getSNR();
+    USB.print(F("-> SNR: "));
+    USB.println(sx1272._SNR); 
+    
+    lora_status = sx1272.getRSSI();
+    USB.print(F("-> RSSI: "));
+    USB.println(sx1272._RSSI);   
+    
+    lora_status = sx1272.getRSSIpacket();
+    USB.print(F("-> Last packet RSSI value is: "));    
+    USB.println(sx1272._RSSIpacket); 
   }
   else 
   {
@@ -174,38 +236,8 @@ void loop()
   } 
 
   //  distance = receivePacket...
-
-  // Detect a movement
-  //  move_state = ACC.();
   
-  /*
-  if(move_state == true){     // Moving
-    PWR.deepSleep("00:00:00:20"RTC_OFFSET,RTC_ALM1_MODE1,ALL_OFF);
-  } else{                     // Stopping
-    if (distance < 540)
-      PWR.deepSleep("00:00:01:00"RTC_OFFSET,RTC_ALM1_MODE1,ALL_OFF);
-    else if (540 <= distance && distance < 900)
-      PWR.deepSleep("00:00:02:00"RTC_OFFSET,RTC_ALM1_MODE1,ALL_OFF);
-    else if (900 <= distance && distance < 1260)
-      PWR.deepSleep("00:00:03:00"RTC_OFFSET,RTC_ALM1_MODE1,ALL_OFF);
-    else if (1260 <= distance && distance < 1620)
-      PWR.deepSleep("00:00:04:00"RTC_OFFSET,RTC_ALM1_MODE1,ALL_OFF);
-    else if (1620 <= distance && distance < 1980)  
-      PWR.deepSleep("00:00:05:00"RTC_OFFSET,RTC_ALM1_MODE1,ALL_OFF);
-    else if (1980 <= distance && distance < 2340)  
-      PWR.deepSleep("00:00:06:00"RTC_OFFSET,RTC_ALM1_MODE1,ALL_OFF);
-    else if (2340 <= distance && distance < 2770)  
-      PWR.deepSleep("00:00:07:00"RTC_OFFSET,RTC_ALM1_MODE1,ALL_OFF);
-    else if (2770 <= distance && distance < 3060)  
-      PWR.deepSleep("00:00:08:00"RTC_OFFSET,RTC_ALM1_MODE1,ALL_OFF);
-    else if (3060 <= distance && distance < 3420)  
-      PWR.deepSleep("00:00:09:00"RTC_OFFSET,RTC_ALM1_MODE1,ALL_OFF);
-    else if (3420 <= distance)  
-      PWR.deepSleep("00:00:10:00"RTC_OFFSET,RTC_ALM1_MODE1,ALL_OFF);
-  }
-  */
+  USB.OFF();
   
-  //PWR.deepSleep("00:00:00:20",RTC_OFFSET,RTC_ALM1_MODE1,ALL_OFF);
-
   delay(2500); 
 }
