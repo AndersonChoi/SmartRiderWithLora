@@ -6,7 +6,7 @@ var end_deviceSchema = new Schema({
 	latitude: String,
 	longitude: String,
 	acceleration: String,
-	state: String,
+	tracking_count: Number,
 	time_stamp: Date
 },{
 	versionKey: false
