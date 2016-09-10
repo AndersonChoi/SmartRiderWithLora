@@ -1,4 +1,4 @@
-module.exports = function(app,Member){
+module.exports = function(app,Member,End_device){
 	// GET ALL MEMBERS
 	app.get('/api/members', function(req,res){
 		Member.find(function(err, members){
@@ -15,12 +15,14 @@ module.exports = function(app,Member){
 
 				member.id = req.body.id;
 				member.password = req.body.password;
-				member.end_device_id = req.body.end_device_id;
 				member.sns = req.body.sns;
 				member.start_latitude = req.body.start_latitude;
 				member.start_longitude = req.body.start_longitude;
 				member.end_latitude = req.body.end_latitude;
 				member.end_longitude = req.body.end_longitude;
+				member.end_device_id = req.body.end_device_id;
+				member.tracking_count = req.body.tracking_count;
+				member.tracking_flag = req.body.tracking_flag;
 
 				member.save(function(err){
 					if(err){
@@ -45,21 +47,41 @@ module.exports = function(app,Member){
 		})
 	});
 
-	// UPDATE THE MEMBER
-	app.post('/api/members/:member_id', function(req, res){
+	// UPDATE THE MEMBER SNS OR END_DEVICE_ID
+	app.post('/api/members/:member_id/sns', function(req, res){
 		Member.findOne({id : req.params.member_id}, function(err, member){
 			if(err) return res.status(500).json({ error: 'database failure' });
 			if(!member) return res.status(404).json({ error: 'member not found' });
 
 			if(req.body.password == member.password){
-//				if(req.body.id) book.title = req.body.title;
-//				if(req.body.passwd) book.author = req.body.author;
-				member.end_device_id = req.body.end_device_id;
-				member.sns = req.body.sns;
+				if(req.body.sns) member.sns = req.body.sns;
+				if(req.body.end_device_id) member.end_device_id = req.body.end_device_id;
 
 				member.save(function(err){
 					if(err) res.status(500).json({error: 'failed to update'});
 					res.json({message: 'member info updated'});
+				});
+			}else{
+				res.json({message: 'password not correct'});
+			}
+		});	
+	});
+
+	// UPDATE THE MEMBER GEOFENCE
+	app.post('/api/members/:member_id/geofence', function(req, res){
+		Member.findOne({id : req.params.member_id}, function(err, member){
+			if(err) return res.status(500).json({ error: 'database failure' });
+			if(!member) return res.status(404).json({ error: 'member not found' });
+
+			if(req.body.password == member.password){
+				member.start_latitude = req.body.start_latitude;
+				member.start_longitude = req.body.start_longitude;
+				member.end_latitude = req.body.end_latitude;
+				member.end_longitude = req.body.end_longitude;
+
+				member.save(function(err){
+					if(err) res.status(500).json({error: 'failed to update'});
+					res.json({message: 'geofence info updated'});
 				});
 			}else{
 				res.json({message: 'password not correct'});
