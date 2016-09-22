@@ -26,8 +26,8 @@ module.exports = function(app,End_device){
 				});
 			});
 		}else{										//if end_device_id is not null -> assign
-			End_device.findOne({end_device_id : req.body.end_device_id}, function(err, member){
-				if(!member){
+			End_device.findOne({end_device_id : req.body.end_device_id}, function(err, end_devices){
+				if(!end_devices){
 					var end_device = new End_device();
 
 					end_device.end_device_id = req.body.end_device_id;
@@ -35,7 +35,7 @@ module.exports = function(app,End_device){
 					end_device.longitude = req.body.longitude;
 					end_device.acceleration = req.body.acceleration;
 					end_device.tracking_count = 0;
-					end_device.time_stamp = req.body.time_stamp;
+					end_device.time_stamp = Date.now();
 
 					end_device.save(function(err){
 						if(err){
