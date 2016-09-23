@@ -171,60 +171,20 @@
                 <thead>
                 <tr class="info">
                     <th>ID</th>
-                    <th>Location</th>
+                    <th>Device</th>
                     <th>SNS</th>
                 </tr>
                 </thead>
                 <tbody style="overflow-y: scroll;height: 225px;width: 94%;position: absolute;">
 
-                <tr>
-                    <td>idssdf1</td>
-                    <td>Nosadfsfne</td>
-                    <td>snasdfass1</td>
-                </tr>
 
-                <tr>
-                    <td>idsadf2</td>
-                    <td>Nosadfafsane</td>
-                    <td>snsasfdsf2</td>
-                </tr>
-
-                <tr>
-                    <td>id2sdf3</td>
-                    <td>Nonasfsadfe</td>
-                    <td>snssdvdv3</td>
-                </tr>
-
-                <tr>
-                    <td>idsv4</td>
-                    <td>Nondsve</td>
-                    <td>snsvasdv4</td>
-                </tr>
-
-                <tr>
-                    <td>id5</td>
-                    <td>None</td>
-                    <td>sns5</td>
-                </tr>
-
-                <tr>
-                    <td>id5</td>
-                    <td>Noasvne</td>
-                    <td>sns5</td>
-                </tr>
-                <tr>
-                    <td>id5</td>
-                    <td>Nosdvne</td>
-                    <td>snavsvs5</td>
-                </tr>
-                <!--
                 {% for i in data %}
                 <tr>
-                    <td>{{ i["id"] }}</td><td>None</td></td><td>{{ i["sns"] }}</td>
+                    <td>{{ i["id"] }}</td><td>{{i["end_device_id"]}}</td></td><td>{{ i["sns"] }}</td>
                 </tr>
                 {% endfor %}
 
-                -->
+
                 </tbody>
             </table>
             <div class="row" id="chartContainer" style="height: 240px; width: 100%;">

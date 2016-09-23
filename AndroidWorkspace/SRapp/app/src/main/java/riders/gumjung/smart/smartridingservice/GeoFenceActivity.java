@@ -3,6 +3,7 @@ package riders.gumjung.smart.smartridingservice;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -92,7 +93,13 @@ public class GeoFenceActivity extends Activity implements OnMapReadyCallback, Vi
         progDialog = new ProgressDialog(this);
         progDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progDialog.setMessage("위치를 받아오는 중입니다....");
-        progDialog.setCancelable(false);
+        progDialog.setCancelable(true);
+        progDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                finish();
+            }
+        });
         progDialog.show();
 
         updateUIHandler = new Handler() {
