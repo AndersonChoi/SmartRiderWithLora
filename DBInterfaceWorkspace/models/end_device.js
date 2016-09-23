@@ -3,11 +3,11 @@ var Schema = mongoose.Schema;
 
 var end_deviceSchema = new Schema({
 	end_device_id: Number,
-	latitude: String,
-	longitude: String,
-	acceleration: String,
-	tracking_count: Number,
-	time_stamp: Date
+	latitude: { type: String, default: "" },
+	longitude: { type: String, default: "" },
+	acceleration: { type: String, default: "" },
+	tracking_count: { type: Number, default: 0 },
+	time_stamp: { type: Date, default: Date.now }
 },{
 	versionKey: false
 });
