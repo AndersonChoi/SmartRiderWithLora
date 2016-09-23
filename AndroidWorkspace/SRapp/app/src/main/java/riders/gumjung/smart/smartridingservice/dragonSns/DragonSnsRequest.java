@@ -30,13 +30,11 @@ public class DragonSnsRequest {
     public SnsInfo[] getSnsInformation() throws Exception {
 
         Log.e("DragonSnsRequest", "start sns information method");
-        String weatherUrl = "http://testweb.mybluemix.net/api/members";
+        String memberUrl = "http://testweb.mybluemix.net/api/members";
         String jsonString;
 
 
-        Log.e("DragonSnsRequest", "get http request");
-        jsonString = GetHttpRequest(weatherUrl);
-        Log.e("DragonSnsRequest", "get http request - done");
+        jsonString = GetHttpRequest(memberUrl);
 
 
         //jsonObj = new JSONObject(jsonString);
@@ -66,9 +64,25 @@ public class DragonSnsRequest {
             snsInfo[i] = new SnsInfo();
             snsInfo[i].setStatus(true);
             snsInfo[i].setUserId(insideObject.getString("id"));
+            snsInfo[i].setEndDeviceId(insideObject.getString("end_device_id"));
             snsInfo[i].setSnsMessage(insideObject.getString("sns"));
 
             //get longitude and lengitude from end-device id
+            String endDeviceUrl = "http://testweb.mybluemix.net/api/end_devices/"+snsInfo[i].getEndDeviceId();
+
+
+            try {
+                String getLocationString;
+                getLocationString = GetHttpRequest(endDeviceUrl);
+                JSONObject locationObj = new JSONObject(getLocationString);
+                snsInfo[i].setLongitude(locationObj.getString("longitude"));
+                snsInfo[i].setLatitude(locationObj.getString("latitude"));
+            }catch(Exception e){
+                snsInfo[i].setStatus(false);
+                snsInfo[i].setLongitude("0");
+                snsInfo[i].setLatitude("0");
+
+            }
 
 
 
@@ -86,11 +100,9 @@ public class DragonSnsRequest {
                 (HttpURLConnection) url.openConnection();
 
         conn.setRequestProperty("Content-Type", CONTENT_TYPE);
-
         if (conn.getResponseCode() != 200) {
             throw new IOException(conn.getResponseMessage());
         }
-
         // Buffer the result into a string
         BufferedReader rd = new BufferedReader(
                 new InputStreamReader(conn.getInputStream()));
@@ -100,7 +112,6 @@ public class DragonSnsRequest {
             sb.append(line);
         }
         rd.close();
-
         conn.disconnect();
         return sb.toString();
     }

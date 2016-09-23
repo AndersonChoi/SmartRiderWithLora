@@ -100,6 +100,7 @@ public class GeoFenceActivity extends Activity implements OnMapReadyCallback, Vi
                 finish();
             }
         });
+
         progDialog.show();
 
         updateUIHandler = new Handler() {

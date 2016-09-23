@@ -8,8 +8,8 @@
 
 
     <RelativeLayout
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true">
 
@@ -36,6 +36,7 @@
 
         <ImageView
             android:layout_width="match_parent"
+            android:scaleType="fitCenter"
             android:layout_height="match_parent"
             android:src="@drawable/dragon_sns_background_500" />
     </RelativeLayout>
