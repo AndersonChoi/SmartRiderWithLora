@@ -36,23 +36,6 @@ public class DragonSnsRequest {
 
         jsonString = GetHttpRequest(memberUrl);
 
-
-        //jsonObj = new JSONObject(jsonString);
-/*
-            JSONObject weatherObj = new JSONObject(jsonObj.getString("weather"));
-            JSONArray weatherArray = new JSONArray(weatherObj.getString("minutely"));
-            JSONObject insideObject = weatherArray.getJSONObject(0);
-            JSONObject stationObject = new JSONObject(insideObject.getString("station"));
-            location = stationObject.getString("name");
-            JSONObject skyObject = new JSONObject(insideObject.getString("sky"));
-            skyInfo = skyObject.getString("name");
-            JSONObject temperatureObject = new JSONObject(insideObject.getString("temperature"));
-            temperature = Double.parseDouble(temperatureObject.getString("tc"));
-            maxTemperature = Double.parseDouble(temperatureObject.getString("tmax"));
-            minTemperature = Double.parseDouble(temperatureObject.getString("tmin"));
-            observationTime = insideObject.getString("timeObservation");
-*/
-
         JSONArray userArray = new JSONArray(jsonString);
 
 

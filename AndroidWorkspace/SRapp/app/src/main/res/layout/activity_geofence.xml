@@ -11,8 +11,7 @@
         android:id="@+id/map_geofence"
         class="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="5dp" />
+        android:layout_height="match_parent" />
 
     <ImageView
         android:id="@+id/draw_image_view"

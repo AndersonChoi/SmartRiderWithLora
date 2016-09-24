@@ -20,7 +20,7 @@
         <activity android:name=".GeoFenceActivity" android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
         <activity android:name=".DragonSnsActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".ExerciseGoActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".ExerciseGoActivity" android:screenOrientation="portrait"/>
         <activity android:name=".ExerciseListActivity" android:screenOrientation="portrait"/>
 
 

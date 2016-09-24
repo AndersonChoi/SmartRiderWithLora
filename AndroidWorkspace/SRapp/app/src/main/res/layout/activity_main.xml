@@ -103,7 +103,7 @@
         android:id="@+id/map"
         class="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"
-        android:layout_height="270dp"
+        android:layout_height="310dp"
         android:layout_below="@id/weather_layout"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"
@@ -350,5 +350,70 @@
         android:layout_height="3dp"
         android:layout_above="@id/introduce_menu"
         android:background="#ffffff" />
+
+
+    <RelativeLayout
+        android:id="@+id/login_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fff">
+
+
+        <LinearLayout
+            android:id="@+id/login_small_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_margin="40dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Id"
+                android:textColor="#000"
+                android:textSize="25dp" />
+
+            <EditText
+                android:id="@+id/login_id_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:singleLine="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Password"
+                android:textColor="#000"
+                android:textSize="25dp" />
+
+            <EditText
+                android:id="@+id/login_password_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:lines="1"/>
+
+            <Button
+                android:id="@+id/login_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="#000"
+                android:text="Sign in"
+                android:textColor="#fff" />
+
+        </LinearLayout>
+
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/login_small_layout"
+            android:background="#00ffffff" />
+
+    </RelativeLayout>
+
 
 </RelativeLayout>

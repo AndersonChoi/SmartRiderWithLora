@@ -3,6 +3,7 @@ package riders.gumjung.smart.smartridingservice;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -15,10 +16,12 @@ import android.util.Log;
 import android.location.LocationManager;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,6 +32,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import riders.gumjung.smart.smartridingservice.login.LoginRequest;
 import riders.gumjung.smart.smartridingservice.weather.WeatherInfo;
 import riders.gumjung.smart.smartridingservice.weather.WeatherRequest;
 
@@ -49,6 +53,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private WeatherInfo weatherInfo;
 
 
+    private RelativeLayout loginLayout;
+    private Button loginButton;
+    private EditText idEditText, passwordEditText;
+    private Boolean isUserExist = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +68,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         setContentView(R.layout.activity_main);
 
+        loginLayout = (RelativeLayout) findViewById(R.id.login_layout);
+        loginButton = (Button) findViewById(R.id.login_button);
+        loginButton.setOnClickListener(loginButtonClickListener);
+        idEditText = (EditText) findViewById(R.id.login_id_edit_text);
+        passwordEditText = (EditText) findViewById(R.id.login_password_edit_text);
+
+
+        SharedPreferences pref = getSharedPreferences("LoginData", MODE_PRIVATE);
+        idEditText.setText(pref.getString("LoginId", ""));
+        passwordEditText.setText(pref.getString("LoginPassword", ""));
 
         introduceBackgroundLayout = (RelativeLayout) findViewById(R.id.introduce_menu);
         introduceMenuTitle = (TextView) findViewById(R.id.menu_title_text);
@@ -104,25 +123,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }).start();
 
 
-
-
-
         updateUIHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 if (weatherInfo.getStatus()) {
-                    weatherStatus.setText(String.valueOf(weatherInfo.getSkyInfo())+",");
-                    temperatureAverage.setText(String.valueOf(weatherInfo.getTemperature())+"°C");
-                    temperatureMax.setText("최고 : "+weatherInfo.getMaxTemperature()+"°C");
-                    temperatureMin.setText("최저 : "+weatherInfo.getMinTemperature()+"°C");
+                    weatherStatus.setText(String.valueOf(weatherInfo.getSkyInfo()) + ",");
+                    temperatureAverage.setText(String.valueOf(weatherInfo.getTemperature()) + "°C");
+                    temperatureMax.setText("최고 : " + weatherInfo.getMaxTemperature() + "°C");
+                    temperatureMin.setText("최저 : " + weatherInfo.getMinTemperature() + "°C");
                 }
             }
         };
 
 
-
-
     }
+
 
     void getWeather() {
         Log.e("weather", "lat,long" + latitude + "," + longitude);
@@ -228,6 +243,50 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     menuNumber = 3;
                     break;
             }
+        }
+    };
+
+    Button.OnClickListener loginButtonClickListener = new View.OnClickListener() {
+        public void onClick(View v) {
+
+
+            final String inputId = idEditText.getText().toString();
+            final String inputPassword = passwordEditText.getText().toString();
+
+            final Handler handler = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+
+                    if (isUserExist) {
+                        Toast.makeText(MainActivity.this, "로그인 완료", Toast.LENGTH_LONG).show();
+
+
+                        SharedPreferences prefs = getSharedPreferences("LoginData", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putString("LoginId", inputId);
+                        editor.putString("LoginPassword", inputPassword);
+                        editor.commit();
+
+
+
+
+                        loginLayout.setVisibility(View.GONE);
+                    } else {
+                        Toast.makeText(MainActivity.this, "사용자 정보가 없거나 서버에 문제가 생겼습니다. 관리자에게 문의하세요.", Toast.LENGTH_LONG).show();
+                    }
+                }
+            };
+
+            new Thread() {
+                public void run() {
+                    LoginRequest loginRequest = new LoginRequest();
+                    isUserExist = loginRequest.isUserExist(inputId, inputPassword);
+                    handler.sendEmptyMessage(0);
+                }
+            }.start();
+
+
+
         }
     };
 

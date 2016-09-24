@@ -18,26 +18,104 @@
             class="com.google.android.gms.maps.MapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
         <ImageView
             android:layout_width="30dp"
             android:layout_height="5dp"
-            android:background="#50ff0000"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            />
+            android:background="#50ff0000" />
 
         <ImageView
             android:layout_width="5dp"
             android:layout_height="30dp"
-            android:background="#50ff0000"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            />
+            android:background="#50ff0000" />
 
         <ImageView
             android:layout_width="match_parent"
-            android:scaleType="fitCenter"
             android:layout_height="match_parent"
+            android:scaleType="fitCenter"
             android:src="@drawable/dragon_sns_background_500" />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentTop="true"
+        android:background="#2C3E50">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Dragon SNS"
+            android:textColor="#fff"
+            android:textSize="35dp" />
+
+    </RelativeLayout>
+
+
+    <net.steamcrafted.materialiconlib.MaterialIconView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/refresh_button"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="10dp"
+        android:background="#00ffffff"
+        android:scaleType="center"
+        app:materialIcon="refresh"
+        app:materialIconColor="#fff"
+        app:materialIconSize="35dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#3A539B">
+
+        <Button
+            android:id="@+id/send_sns_button"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentRight="true"
+            android:layout_margin="10dp"
+            android:background="#30ffffff"
+            android:text="Post\nSNS"
+            android:textColor="#fff"
+            android:textSize="20dp" />
+
+        <net.steamcrafted.materialiconlib.MaterialIconView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/my_position_button"
+            android:layout_width="40dp"
+            android:layout_height="60dp"
+            android:layout_margin="10dp"
+            android:background="#00ffffff"
+            android:scaleType="center"
+            app:materialIcon="map_marker"
+            app:materialIconColor="#fff"
+            app:materialIconSize="30dp" />
+
+        <EditText
+            android:layout_centerVertical="true"
+            android:id="@+id/send_sns_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_toLeftOf="@id/send_sns_button"
+            android:layout_toRightOf="@id/my_position_button"
+            android:background="#fff"
+            android:inputType="textVisiblePassword"
+            android:lines="1"
+            android:maxLength="40"
+            android:singleLine="true"
+            android:textColor="#000"
+            android:textSize="24dp" />
+
+
     </RelativeLayout>
 </RelativeLayout>
