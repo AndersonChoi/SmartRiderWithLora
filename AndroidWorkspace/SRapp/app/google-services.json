@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "798567828568",
+    "firebase_url": "https://cseworkspace-142114.firebaseio.com",
+    "project_id": "cseworkspace-142114",
+    "storage_bucket": "cseworkspace-142114.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:798567828568:android:ab8ac93919eb93ec",
+        "android_client_info": {
+          "package_name": "riders.gumjung.smart.smartridingservice"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "798567828568-6gd9h71d1sqoaq638e5mdcblp5rh1k89.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "riders.gumjung.smart.smartridingservice",
+            "certificate_hash": "09BA3896CD070243E448C1773060B6E5DB5E702E"
+          }
+        },
+        {
+          "client_id": "798567828568-uutbfqvbb7jbnl22seqfo7pifv7efjau.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC68O_KmxMKqyyWLCNIkBROltiG-z7MHVk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "798567828568-uutbfqvbb7jbnl22seqfo7pifv7efjau.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

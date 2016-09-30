@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -252,7 +253,13 @@ public class GeoFenceActivity extends Activity implements OnMapReadyCallback, Vi
                             if (isGeofenceCorrect) {
 
                                 Toast.makeText(GeoFenceActivity.this, "GeoFence가 설정되었습니다!!", Toast.LENGTH_SHORT).show();
-                                finish();
+
+                                Intent reLaunchMain=new Intent(GeoFenceActivity.this,MainActivity.class);
+                                reLaunchMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(reLaunchMain);
+
+
+
                             } else {
                                 Toast.makeText(GeoFenceActivity.this, "GeoFence가 설정가 설정되지 않았습니다. 관리자에게 문의하세요.", Toast.LENGTH_SHORT).show();
                                 finish();

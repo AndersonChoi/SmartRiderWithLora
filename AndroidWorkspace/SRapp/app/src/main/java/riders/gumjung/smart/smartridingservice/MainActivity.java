@@ -2,6 +2,7 @@ package riders.gumjung.smart.smartridingservice;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -31,15 +32,21 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.iid.FirebaseInstanceId;
 
+import riders.gumjung.smart.smartridingservice.dragonSns.DragonSnsRequest;
+import riders.gumjung.smart.smartridingservice.geofence.GeofenceGetRequest;
+import riders.gumjung.smart.smartridingservice.geofence.GeofenceInfo;
+import riders.gumjung.smart.smartridingservice.geofence.GeofenceRequest;
 import riders.gumjung.smart.smartridingservice.login.LoginRequest;
+import riders.gumjung.smart.smartridingservice.token.TokenRequest;
 import riders.gumjung.smart.smartridingservice.weather.WeatherInfo;
 import riders.gumjung.smart.smartridingservice.weather.WeatherRequest;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private static int menuNumber = 0;
-    private ProgressDialog progDialog;
+    private ProgressDialog progDialog, progDialog2;
     private Handler updateUIHandler;
     private double latitude;
     private double longitude;
@@ -58,15 +65,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private EditText idEditText, passwordEditText;
     private Boolean isUserExist = false;
 
+    private RelativeLayout geofenceLayout;
+    private Button geofenceUnlockButton;
+
+
+    private GoogleMap map;
+    private double myLatitude = 0;
+    private double myLongitude = 0;
+    private Handler myLocationHandler, myLocationHandler2;
+    private GeofenceInfo[] geofenceInfoArray;
+    private  Boolean isGeofenceCorrect=false;
+
+    private static final String TAG = "MainActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-        latitude = 35.13501;
-        longitude = 129.10445;
-
         setContentView(R.layout.activity_main);
+
+
+
+
 
         loginLayout = (RelativeLayout) findViewById(R.id.login_layout);
         loginButton = (Button) findViewById(R.id.login_button);
@@ -74,10 +94,31 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         idEditText = (EditText) findViewById(R.id.login_id_edit_text);
         passwordEditText = (EditText) findViewById(R.id.login_password_edit_text);
 
+        geofenceLayout = (RelativeLayout) findViewById(R.id.geofence_lock_layout);
+        geofenceUnlockButton = (Button) findViewById(R.id.geofence_unlock_button);
+        geofenceUnlockButton.setOnClickListener(mGeofenceUnlockListener);
 
         SharedPreferences pref = getSharedPreferences("LoginData", MODE_PRIVATE);
         idEditText.setText(pref.getString("LoginId", ""));
         passwordEditText.setText(pref.getString("LoginPassword", ""));
+
+
+        //check geofence in this
+
+
+        progDialog2 = new ProgressDialog(this);
+        progDialog2.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progDialog2.setMessage("데이터를 받아오는 중입니다...");
+        progDialog2.setCancelable(true);
+        progDialog2.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                finish();
+            }
+        });
+
+
+        //check geofence end..
 
         introduceBackgroundLayout = (RelativeLayout) findViewById(R.id.introduce_menu);
         introduceMenuTitle = (TextView) findViewById(R.id.menu_title_text);
@@ -108,19 +149,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         progDialog = new ProgressDialog(this);
         progDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progDialog.setMessage("날씨를 받아오는 중입니다....");
+        progDialog.setMessage("데이터를 받아오는 중입니다....");
         progDialog.show();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                getWeather();
-
-                updateUIHandler.sendEmptyMessage(0);
-                progDialog.dismiss();
-            }
-        }).start();
 
 
         updateUIHandler = new Handler() {
@@ -134,6 +164,121 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         };
+
+
+        myLocationHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+
+
+                boolean isUserDataExist = false;
+                int userIndex = 0;
+                for (int i = 0; i < geofenceInfoArray.length; i++) {
+                    if (geofenceInfoArray[i].getStatus() == true) {
+                        SharedPreferences pref = getSharedPreferences("LoginData", MODE_PRIVATE);
+                        String myId = pref.getString("LoginId", "");
+                        if (geofenceInfoArray[i].getUserId().equals(myId)) {
+                            isUserDataExist = true;
+                            userIndex = i;
+                            break;
+                        }
+                    }
+                }
+
+                if (isUserDataExist) {
+                    myLatitude = Double.parseDouble(geofenceInfoArray[userIndex].getLatitude());
+                    myLongitude = Double.parseDouble(geofenceInfoArray[userIndex].getLongitude());
+
+                    map.addMarker(new MarkerOptions()
+                            .position(new LatLng(myLatitude, myLongitude))
+                            .icon(BitmapDescriptorFactory
+                                    .defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                    );
+
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(geofenceInfoArray[userIndex].getLatitude()),
+                            Double.parseDouble(geofenceInfoArray[userIndex].getLongitude())), 17));
+
+                    latitude =Double.parseDouble(geofenceInfoArray[userIndex].getLatitude());
+                    longitude=Double.parseDouble(geofenceInfoArray[userIndex].getLongitude());
+
+                    progDialog.dismiss();
+
+
+
+                    // and check user has geofence information if it is please view to gone..
+
+                    Log.e("check geofence","geofence? : "+geofenceInfoArray[userIndex].getGenfenceExist());
+
+
+                    if(geofenceInfoArray[userIndex].getGenfenceExist()){
+                        //true genfence is exist..
+                        geofenceLayout.setVisibility(View.VISIBLE);
+
+                    }else{
+                        geofenceLayout.setVisibility(View.GONE);
+
+                    }
+                }
+
+            }
+        };
+
+        myLocationHandler2 = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+
+                Toast.makeText(MainActivity.this, "데이터를 읽어오는데 오류가 생겼습니다 관리자에게 문의하세요.", Toast.LENGTH_LONG).show();
+            }
+        };
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                GeofenceGetRequest geofenceRequest = new GeofenceGetRequest();
+
+                try {
+                    Log.e("geofence", "get Array");
+
+                    geofenceInfoArray = geofenceRequest.getGeofenceInfo();
+                    getWeather();
+                    updateUIHandler.sendEmptyMessage(0);
+                    myLocationHandler.sendEmptyMessage(0);
+                } catch (Exception e) {
+
+                    Log.e("error..","e:"+e);
+                    myLocationHandler2.sendEmptyMessage(0);
+
+                    finish();
+                }
+            }
+        }
+        ).start();
+
+
+
+
+
+
+
+        if (getIntent().getExtras() != null) {
+            for (String key : getIntent().getExtras().keySet()) {
+                Object value = getIntent().getExtras().get(key);
+                Log.d("Firebase KEY in main", "Key: " + key + " Value: " + value);
+
+
+
+
+            }
+        }
+        if ((pref.getString("LoginId", "").length() != 0) && (pref.getString("LoginPassword", "").length() != 0)) {
+            //로그인 정보가 있으면 바로 로그인 화면을 없애버린다.
+            loginLayout.setVisibility(View.GONE);
+        }else{
+            //로그인정보가 없음녀 로그인화면을 보여주고 프로그래스 다이얼로그를 없애버린다 로그인할수있도록
+            progDialog.dismiss();
+        }
+
+
+
 
 
     }
@@ -156,58 +301,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     @Override
-    public void onMapReady(final GoogleMap map) {
+    public void onMapReady(final GoogleMap readyMap) {
 
-
-        LocationListener mLocationListener = new LocationListener() {
-            public void onLocationChanged(Location location) {
-
-
-                MarkerOptions marker = new MarkerOptions();
-                marker.position(new LatLng(location.getLatitude(), location.getLongitude()));
-                marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_my_location_black_24dp));
-                map.clear();
-                map.addMarker(marker);
-
-
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                        new LatLng(location.getLatitude(), location.getLongitude()), 13));
-
-                CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(new LatLng(location.getLatitude(), location.getLongitude()))
-                        .zoom(17)
-                        .bearing(0)
-                        .build();
-                map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-
-            }
-
-            public void onProviderDisabled(String provider) {
-            }
-
-            public void onProviderEnabled(String provider) {
-            }
-
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-        };
-
-
-        int permissionCheck = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.MAPS_RECEIVE);
-
-        if (permissionCheck == PackageManager.PERMISSION_DENIED) {
-            //no permission
-            Toast.makeText(MainActivity.this, "Permission denied", Toast.LENGTH_LONG).show();
-            finish();
-        } else {
-            //permission ok
-            //map.setMyLocationEnabled(true);
-            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, mLocationListener);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, mLocationListener);
-
+        map = readyMap;
     }
 
     Button.OnClickListener menuButtonClickListener = new View.OnClickListener() {
@@ -246,6 +342,46 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     };
 
+    Button.OnClickListener mGeofenceUnlockListener = new View.OnClickListener() {
+        public void onClick(View v) {
+
+
+            final Handler geofenceHandler = new
+                    Handler() {
+                        @Override
+                        public void handleMessage(Message msg) {
+
+                            if (isGeofenceCorrect) {
+
+                                Toast.makeText(MainActivity.this, "GeoFence가 해제되었습니다!!", Toast.LENGTH_SHORT).show();
+                                recreate();
+                            } else {
+                                Toast.makeText(MainActivity.this, "GeoFence가 정상적으로 해제되지 않았습니다! 관리자에게 문의하세요.", Toast.LENGTH_SHORT).show();
+                                recreate();
+                            }
+                        }
+                    };
+
+            isGeofenceCorrect = false;
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    GeofenceRequest geofenceRequest = new GeofenceRequest();
+                    SharedPreferences pref = getSharedPreferences("LoginData", MODE_PRIVATE);
+                    String myId = pref.getString("LoginId", "");
+                    isGeofenceCorrect = geofenceRequest.sendGeofence(myId,"","","","");
+                    geofenceHandler.sendEmptyMessage(0);
+                }
+            }
+            ).start();
+
+
+
+
+        }
+    };
+
     Button.OnClickListener loginButtonClickListener = new View.OnClickListener() {
         public void onClick(View v) {
 
@@ -258,6 +394,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 public void handleMessage(Message msg) {
 
                     if (isUserExist) {
+
+
+
                         Toast.makeText(MainActivity.this, "로그인 완료", Toast.LENGTH_LONG).show();
 
 
@@ -266,8 +405,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         editor.putString("LoginId", inputId);
                         editor.putString("LoginPassword", inputPassword);
                         editor.commit();
-
-
 
 
                         loginLayout.setVisibility(View.GONE);
@@ -281,10 +418,27 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 public void run() {
                     LoginRequest loginRequest = new LoginRequest();
                     isUserExist = loginRequest.isUserExist(inputId, inputPassword);
+
+
+                    if(isUserExist){
+                        //send token to user data
+
+                        String token = FirebaseInstanceId.getInstance().getToken();
+
+
+                        TokenRequest tokenRequest = new TokenRequest();
+                        tokenRequest.sendToken(inputId, token);
+
+
+
+                    }
+
+
+
+
                     handler.sendEmptyMessage(0);
                 }
             }.start();
-
 
 
         }
