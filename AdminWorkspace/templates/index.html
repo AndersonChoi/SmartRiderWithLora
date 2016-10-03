@@ -47,9 +47,28 @@
             });
 
 
-            //{% for i in data %}
-            //{{ i["sns"] }}
-            //{% endfor %}
+
+           var count=0;
+           {% for userDataParse in userData %}
+                count++;
+           {% endfor %}
+           console.log("count:"+count);//user count
+           var userArray = new Array(
+           {% for userDataParse in userData %}
+                "{{userDataParse["end_device_id"]}}",
+           {% endfor %}
+           "");//parse data inthe user Array
+
+           for(i=0;i<count;i++){
+            console.log("user_Device_id : "+userArray[i]);
+
+            var deviceURL="http://testweb.mybluemix.net/api/end_devices/"+userArray[i];
+            console.log(deviceURL);
+
+
+
+           }
+
 
 
             var myLatlng = new google.maps.LatLng(35.232136,129.083543);
@@ -116,6 +135,10 @@
 
 
 
+
+
+
+
     </script>
 
 
@@ -156,51 +179,50 @@
     </div>
 
 
-    <h1 class="page-header"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>&nbsp;전동휠 status</h1>
+    <h1 class="page-header"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;사용자 리스트</h1>
 
-    <div class="row">
+
+    <div class="container">
+        <table class="table">
+            <thead>
+            <tr class="info">
+                <th>User ID</th>
+                <th>Device No.</th>
+                <th>SNS</th>
+                <th>Log</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for userDataParse in userData %}
+            <tr>
+                <td>{{userDataParse["id"]}}</td>
+                <td>{{userDataParse["end_device_id"]}}</td>
+                <td>"{{userDataParse["sns"]}}"</td>
+                <td><a type="button" class="btn btn-primary" href="/log/{{userDataParse["end_device_id"]}}">Log</a></td>
+            </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+
+    <h1 class="page-header"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>&nbsp;전동휠 현재 위치 Map</h1>
+
+    <div class="container">
         <div class="col-md-7">
 
             <div id="map" style="width:100%; height:500px;"></div>
-
-
         </div>
 
         <div class="col-md-5">
-            <table class="table table-hover" style="width:100%; height:240px;">
-                <thead>
-                <tr class="info">
-                    <th>ID</th>
-                    <th>Device</th>
-                    <th>SNS</th>
-                </tr>
-                </thead>
-                <tbody style="overflow-y: scroll;height: 225px;width: 94%;position: absolute;">
-
-
-                {% for i in data %}
-                <tr>
-                    <td>{{ i["id"] }}</td><td>{{i["end_device_id"]}}</td></td><td>{{ i["sns"] }}</td>
-                </tr>
-                {% endfor %}
-
-
-                </tbody>
-            </table>
             <div class="row" id="chartContainer" style="height: 240px; width: 100%;">
 
             </div>
-
-
         </div>
     </div>
-
-
     <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAhL4TBUX1yFnwJ9n3fLrCcMsWIKmGQ6cA&callback=initMap"
             async defer></script>
-
-
-    <h1 class="page-header"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;사용자 리스트</h1>
 
 
     <hr>

@@ -41,7 +41,7 @@
                 android:layout_marginLeft="5dp"
                 android:text="맑음"
                 android:textColor="#fff"
-                android:textSize="20dp" />
+                android:textSize="15dp" />
 
             <TextView
                 android:id="@+id/average_temperature_status"
@@ -103,7 +103,7 @@
         android:id="@+id/map"
         class="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"
-        android:layout_height="310dp"
+        android:layout_height="230dp"
         android:layout_below="@id/weather_layout"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"
@@ -181,7 +181,7 @@
                     android:layout_centerHorizontal="true"
                     android:text="GeoFence"
                     android:textColor="#ffffff"
-                    android:textSize="10dp"
+                    android:textSize="9dp"
                     android:textStyle="bold" />
 
                 <ImageView
@@ -225,7 +225,7 @@
                     android:layout_centerHorizontal="true"
                     android:text="DragonSNS"
                     android:textColor="#ffffff"
-                    android:textSize="10dp"
+                    android:textSize="9dp"
                     android:textStyle="bold" />
 
                 <ImageView
@@ -270,7 +270,7 @@
                     android:layout_centerHorizontal="true"
                     android:text="Exercise"
                     android:textColor="#ffffff"
-                    android:textSize="10dp"
+                    android:textSize="9dp"
                     android:textStyle="bold" />
 
                 <ImageView
@@ -315,7 +315,7 @@
                     android:layout_centerHorizontal="true"
                     android:text="Log"
                     android:textColor="#ffffff"
-                    android:textSize="10dp"
+                    android:textSize="9dp"
                     android:textStyle="bold" />
 
                 <ImageView

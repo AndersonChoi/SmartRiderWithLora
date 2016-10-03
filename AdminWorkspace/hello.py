@@ -17,9 +17,24 @@ port = int(os.getenv('VCAP_APP_PORT', 8080))
 @app.route('/')
 def home():
     response = urllib2.urlopen("http://testweb.mybluemix.net/api/members")
+    response2 = urllib2.urlopen("http://testweb.mybluemix.net/api/end_devices")
     data = simplejson.load(response)
-    return render_template('index.html',data=data)
+    data2 = simplejson.load(response2)
+    return render_template('index.html',userData=data, deviceData=data2 )
 
+
+@app.route('/log/<userdevice>')
+def logpage(userdevice):
+
+    deviceURL = "http://testweb.mybluemix.net/api/end_devices/"
+    deviceURLappend="/list"
+    eachDeviceURL =deviceURL+userdevice+deviceURLappend
+
+    response = urllib2.urlopen("http://testweb.mybluemix.net/api/members")
+    response2 = urllib2.urlopen(eachDeviceURL)
+    data = simplejson.load(response)
+    data2 = simplejson.load(response2)
+    return render_template('log.html',userDeviceNumber = userdevice,userData=data, deviceDataList=data2 )
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)

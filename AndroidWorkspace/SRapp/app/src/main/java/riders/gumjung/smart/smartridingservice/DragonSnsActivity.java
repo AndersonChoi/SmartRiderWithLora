@@ -77,7 +77,7 @@ public class DragonSnsActivity extends AppCompatActivity implements OnMapReadyCa
                 new View.OnClickListener() {
                     public void onClick(View v) {
                         Toast.makeText(DragonSnsActivity.this, "내 주변 라이더들을 검색합니다.", Toast.LENGTH_SHORT).show();
-                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLatitude, myLongitude), 14));
+                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLatitude, myLongitude), 16));
                     }
                 }
         );

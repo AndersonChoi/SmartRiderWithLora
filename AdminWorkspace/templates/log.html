@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SR Mornitoring System</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/static/stylesheets/style.css">
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="/static/js/canvasjs.min.js"></script>
+
+
+    <script language="javascript">
+
+        function loadMainPage() {
+
+
+        }
+
+
+        var map;
+        function initMap() {
+
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: 35.232136 , lng:129.083543},
+                zoom: 15
+            });
+
+
+           var count=0;
+           {% for deviceDataArray in deviceDataList %}
+                count++;
+           {% endfor %}
+
+
+           console.log("nodes count:"+count);//device nodes count
+
+
+
+           {% for deviceDataArray in deviceDataList %}
+
+            var myLatlng_{{deviceDataArray["_id"]}};
+            var infowindow_{{deviceDataArray["_id"]}};
+            var marker_{{deviceDataArray["_id"]}};
+
+            myLatlng_{{deviceDataArray["_id"]}} = new google.maps.LatLng({{deviceDataArray["latitude"]}},{{deviceDataArray["longitude"]}});
+            marker_{{deviceDataArray["_id"]}} = new google.maps.Marker({
+                position: myLatlng_{{deviceDataArray["_id"]}}
+            });
+            marker_{{deviceDataArray["_id"]}}.setMap(map);
+            infowindow_{{deviceDataArray["_id"]}} = new google.maps.InfoWindow({
+											content: "{{deviceDataArray["time_stamp"]}}"
+			});
+            infowindow_{{deviceDataArray["_id"]}}.close(map, marker_{{deviceDataArray["_id"]}});
+            marker_{{deviceDataArray["_id"]}}.addListener('click', function() {
+                infowindow_{{deviceDataArray["_id"]}}.open(map, marker_{{deviceDataArray["_id"]}});
+            });
+           {% endfor %}
+
+
+
+
+
+          var bikeCoordinates = [
+
+           {% for deviceDataArray in deviceDataList %}
+                {lat: {{deviceDataArray["latitude"]}}, lng: {{deviceDataArray["longitude"]}}},
+           {% endfor %}
+
+          ];
+
+
+          var bikePath = new google.maps.Polyline({
+            path: bikeCoordinates,
+            geodesic: true,
+            strokeColor: '#FF0000',
+            strokeOpacity: 1.0,
+            strokeWeight: 2
+          });
+
+          bikePath.setMap(map);
+
+
+
+
+
+
+        }
+
+       {% for deviceDataArray in deviceDataList %}
+        function mapView_{{deviceDataArray["_id"]}}(){
+            map.setZoom(18);
+            map.setCenter(new google.maps.LatLng({{deviceDataArray["latitude"]}},{{deviceDataArray["longitude"]}}));
+        }
+       {% endfor %}
+
+
+
+
+
+
+    </script>
+
+
+</head>
+<body style=' background: white ' onload="loadMainPage()">
+
+
+<div class="container">
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">
+                    <img alt="Brand" width="30px" height="30px" src="/static/images/placeholder.png">
+                    Smart-Riding admin system</a>
+            </div>
+            <div class="collapse navbar-collapse ">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/">Home</a></li>
+                    <li><a href="/#">Information</a></li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="jumbotron" name="#map"  style=' background-image:url("/static/images/bike_background.jpg");'>
+        <h1>Log</h1>
+        <p>
+            <font style='background: rgba(225, 225, 225, .7);'> - Log를 확인할 수 있는 페이지입니다.</font>
+        </p>
+    </div>
+
+    <h1 class="page-header"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>&nbsp;{{userDeviceNumber}}번 전동휠 Map log</h1>
+
+    <div  class="container">
+        <div class="col-md-12">
+
+            <div id="map" style="width:100%; height:500px;"></div>
+        </div>
+    </div>
+    <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAhL4TBUX1yFnwJ9n3fLrCcMsWIKmGQ6cA&callback=initMap"
+            async defer></script>
+
+
+    <h1 class="page-header"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>&nbsp;{{userDeviceNumber}}번 전동휠 log</h1>
+
+    <div class="container">
+        <table class="table">
+            <thead>
+            <tr class="info">
+                <th>Time stamp</th>
+                <th>Speed</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>View</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for deviceDataArray in deviceDataList %}
+            <tr>
+                <td>{{deviceDataArray["time_stamp"]}}</td>
+                <td>{{deviceDataArray["speed"]}}</td>
+                <td>{{deviceDataArray["latitude"]}}</td>
+                <td>{{deviceDataArray["longitude"]}}</td>
+                <td><a type="button" class="btn btn-primary" href="#map" onclick="mapView_{{deviceDataArray["_id"]}}()">Map view</a></td>
+            </tr>
+            {% endfor %}
+
+
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <hr>
+    <footer>
+        <dl class="dl-horizontal">
+            <dt><img src="/static/images/pnu_logo.jpg"/></dt>
+            <dd>
+                <p>
+                    <strong>&copy; 2016 금정산 라이더스. All rights reserved.</strong>
+                </p>
+                <p>
+                    <em>Leader developer 최원영</em><br>
+                    <em>Data dommunication developer 박정빈</em><br>
+                    <em>Database developer 김창현</em>
+                </p>
+            </dd>
+        </dl>
+    </footer>
+</div>
+
+
+</body>
+</html>

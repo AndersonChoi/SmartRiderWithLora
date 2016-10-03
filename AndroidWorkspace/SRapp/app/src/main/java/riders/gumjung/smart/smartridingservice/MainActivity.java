@@ -34,6 +34,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import riders.gumjung.smart.smartridingservice.dragonSns.DragonSnsRequest;
 import riders.gumjung.smart.smartridingservice.geofence.GeofenceGetRequest;
 import riders.gumjung.smart.smartridingservice.geofence.GeofenceInfo;
@@ -77,6 +80,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private  Boolean isGeofenceCorrect=false;
 
     private static final String TAG = "MainActivity";
+
+
+    private TimerTask mTask;
+    private Timer mTimer;
+
+
+    private TimerTask mWeatherTask;
+    private Timer mWeatherTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -226,33 +237,63 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         myLocationHandler2 = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-
                 Toast.makeText(MainActivity.this, "데이터를 읽어오는데 오류가 생겼습니다 관리자에게 문의하세요.", Toast.LENGTH_LONG).show();
             }
         };
-        new Thread(new Runnable() {
+
+
+
+        mTask = new TimerTask() {
             @Override
             public void run() {
-                GeofenceGetRequest geofenceRequest = new GeofenceGetRequest();
-
-                try {
-                    Log.e("geofence", "get Array");
-
-                    geofenceInfoArray = geofenceRequest.getGeofenceInfo();
-                    getWeather();
-                    updateUIHandler.sendEmptyMessage(0);
-                    myLocationHandler.sendEmptyMessage(0);
-                } catch (Exception e) {
-
-                    Log.e("error..","e:"+e);
-                    myLocationHandler2.sendEmptyMessage(0);
-
-                    finish();
+                Log.e("timer", "timer start!!");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        GeofenceGetRequest geofenceRequest = new GeofenceGetRequest();
+                        try {
+                            Log.e("geofence", "get Array");
+                            geofenceInfoArray = geofenceRequest.getGeofenceInfo();
+                            myLocationHandler.sendEmptyMessage(0);
+                        } catch (Exception e) {
+                            Log.e("error..","e:"+e);
+                            myLocationHandler2.sendEmptyMessage(0);
+                            finish();
+                        }
+                    }
                 }
+                ).start();
             }
-        }
-        ).start();
+        };
 
+        mTimer = new Timer();
+        mTimer.schedule(mTask, 1000, 10000);
+
+
+
+        mWeatherTask = new TimerTask() {
+            @Override
+            public void run() {
+                Log.e("weathertimer", "timer start!!");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Log.e("weather", "get Array");
+                            getWeather();
+                            updateUIHandler.sendEmptyMessage(0);
+                        } catch (Exception e) {
+                            Log.e("error..","e:"+e);
+                            myLocationHandler2.sendEmptyMessage(0);
+                            finish();
+                        }
+                    }
+                }
+                ).start();
+            }
+        };
+        mWeatherTimer = new Timer();
+        mWeatherTimer.schedule(mWeatherTask, 3000);
 
 
 
@@ -263,8 +304,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             for (String key : getIntent().getExtras().keySet()) {
                 Object value = getIntent().getExtras().get(key);
                 Log.d("Firebase KEY in main", "Key: " + key + " Value: " + value);
-
-
 
 
             }
@@ -490,5 +529,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+
+    @Override
+    protected void onDestroy() {
+        Log.i("test", "onDstory()");
+        mTimer.cancel();
+        super.onDestroy();
+    }
 
 }

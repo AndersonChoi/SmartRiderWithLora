@@ -9,6 +9,7 @@
         android:theme="@style/AppTheme">
 
         <activity
+            android:keepScreenOn="true"
             android:name=".MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -18,10 +19,14 @@
         </activity>
 
         <activity android:name=".GeoFenceActivity" android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
-        <activity android:name=".DragonSnsActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".ExerciseGoActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".ExerciseListActivity" android:screenOrientation="portrait"/>
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:keepScreenOn="true"/>
+        <activity android:name=".DragonSnsActivity" android:screenOrientation="portrait"
+            android:keepScreenOn="true"/>
+        <activity android:name=".ExerciseGoActivity" android:screenOrientation="portrait"
+            android:keepScreenOn="true"/>
+        <activity android:name=".ExerciseListActivity" android:screenOrientation="portrait"
+            android:keepScreenOn="true"/>
 
 
         <meta-data
