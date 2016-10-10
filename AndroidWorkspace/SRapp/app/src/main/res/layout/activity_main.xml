@@ -134,7 +134,7 @@
             android:layout_below="@id/menu_title_text"
             android:layout_centerHorizontal="true"
             android:layout_margin="5dp"
-            android:text="GeoFence를 활용하여 도난방지 기능을 사용합니다."
+            android:text="Execute burglar alarm system with GeoFence"
             android:textColor="#ffffff"
             android:textSize="14dp" />
 
@@ -154,7 +154,7 @@
             android:layout_below="@id/menu_introduce_text"
             android:layout_margin="10dp"
             android:background="#0086786e"
-            android:text="사용하러 가기" />
+            android:text="Execute function" />
 
     </RelativeLayout>
 
@@ -370,14 +370,14 @@
                 android:textSize="30dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="[Geofence가 동작중입니다]"
+                android:text="[Geofence is activated]"
                 />
             <TextView
                 android:textColor="#f00"
                 android:layout_width="wrap_content"
                 android:textSize="30dp"
                 android:layout_height="wrap_content"
-                android:text="[Geofence가 동작중입니다]"
+                android:text="[Geofence is activated]"
                 />
         </RelativeLayout>
 
@@ -396,7 +396,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="지오펜스 해제하기"
+                android:text="Release GeeFence"
                 android:textColor="#fff"
                 android:textSize="20dp"
                 android:layout_centerInParent="true"/>

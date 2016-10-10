@@ -29,6 +29,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import riders.gumjung.smart.smartridingservice.dragonSns.DragonSnsRequest;
 import riders.gumjung.smart.smartridingservice.dragonSns.SendSnsRequest;
@@ -60,6 +61,8 @@ public class DragonSnsActivity extends AppCompatActivity implements OnMapReadyCa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Locale.setDefault(new Locale ("en", "US"));
         setContentView(R.layout.activity_dragon_sns);
 
 
@@ -76,7 +79,7 @@ public class DragonSnsActivity extends AppCompatActivity implements OnMapReadyCa
         myPositionButton.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
-                        Toast.makeText(DragonSnsActivity.this, "내 주변 라이더들을 검색합니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DragonSnsActivity.this, "Search friends surroundings.", Toast.LENGTH_SHORT).show();
                         map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLatitude, myLongitude), 16));
                     }
                 }
@@ -85,7 +88,7 @@ public class DragonSnsActivity extends AppCompatActivity implements OnMapReadyCa
                 new View.OnClickListener() {
                     public void onClick(View v) {
                         recreate();
-                        Toast.makeText(DragonSnsActivity.this, "SNS를 새로고침합니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DragonSnsActivity.this, "Refresh SNS", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -96,7 +99,7 @@ public class DragonSnsActivity extends AppCompatActivity implements OnMapReadyCa
 
                         final String snsMessage = snsMessageEdittext.getText().toString().trim();
                         if (snsMessage.length() == 0) {
-                            Toast.makeText(DragonSnsActivity.this, "메시지를 입력하세요!!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(DragonSnsActivity.this, "Please insert message!!", Toast.LENGTH_LONG).show();
                         } else {
 
                             final Handler snsHandler = new Handler() {
@@ -105,11 +108,11 @@ public class DragonSnsActivity extends AppCompatActivity implements OnMapReadyCa
 
                                     if (isSendSnsGood) {
 
-                                        Toast.makeText(DragonSnsActivity.this, "SNS가 등록되었습니다.", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(DragonSnsActivity.this, "SNS is posted", Toast.LENGTH_LONG).show();
                                         snsMessageEdittext.setText("");
                                         recreate();
                                     } else {
-                                        Toast.makeText(DragonSnsActivity.this, "서버에 문제가 생겼습니다. 관리자에게 문의하세요", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(DragonSnsActivity.this, "Server has problem. Please contact administrater", Toast.LENGTH_LONG).show();
                                     }
                                 }
                             };
@@ -161,7 +164,7 @@ public class DragonSnsActivity extends AppCompatActivity implements OnMapReadyCa
                 Handler() {
                     @Override
                     public void handleMessage(Message msg) {
-                        Toast.makeText(DragonSnsActivity.this, "서버에 이상이 생겼습니다 SNS를 불러올 수 없습니다.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(DragonSnsActivity.this, "Server has problem. Please contact administrater", Toast.LENGTH_LONG).show();
                     }
                 }
 

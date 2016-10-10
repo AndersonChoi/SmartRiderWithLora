@@ -140,7 +140,7 @@ public class GeoFenceActivity extends Activity implements OnMapReadyCallback, Vi
 
         progDialog = new ProgressDialog(this);
         progDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progDialog.setMessage("위치를 받아오는 중입니다....");
+        progDialog.setMessage("Receiving your current position...");
         progDialog.setCancelable(true);
         progDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
@@ -154,7 +154,7 @@ public class GeoFenceActivity extends Activity implements OnMapReadyCallback, Vi
         updateUIHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                Toast.makeText(GeoFenceActivity.this, "GeoFence 범위를 드래그 하세요!", Toast.LENGTH_LONG).show();
+                Toast.makeText(GeoFenceActivity.this, "Please drag GeoFence range", Toast.LENGTH_LONG).show();
             }
         };
         decisionGeoFenceHandler = new Handler() {
@@ -162,7 +162,7 @@ public class GeoFenceActivity extends Activity implements OnMapReadyCallback, Vi
             public void handleMessage(Message msg) {
                 noDrawCanvasButton.setVisibility(View.VISIBLE);
                 setGeoFenceButton.setVisibility(View.VISIBLE);
-                Toast.makeText(GeoFenceActivity.this, "해당범위로 GeoFence를 설정하시겠습니까?", Toast.LENGTH_LONG).show();
+                Toast.makeText(GeoFenceActivity.this, "Do you want to set up this range to GeoFence?", Toast.LENGTH_LONG).show();
             }
         };
 
@@ -170,7 +170,7 @@ public class GeoFenceActivity extends Activity implements OnMapReadyCallback, Vi
         decisionGeoFenceHandler2 = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                Toast.makeText(GeoFenceActivity.this, "반드시 전동휠이 지오펜스 내부에 있어야 합니다!! 다시 설정해주세요.", Toast.LENGTH_LONG).show();
+                Toast.makeText(GeoFenceActivity.this, "Motor wheel should be in GeoFence!! Please drag GeoFence range again.", Toast.LENGTH_LONG).show();
                 recreate();
             }
         };
@@ -216,7 +216,7 @@ public class GeoFenceActivity extends Activity implements OnMapReadyCallback, Vi
         myLocationHandler2 = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                Toast.makeText(GeoFenceActivity.this, "내 위치를 가져올 수 없습니다. 관리자에게 문의하세요!", Toast.LENGTH_LONG).show();
+                Toast.makeText(GeoFenceActivity.this, "You can't get your position. Please contact administrater", Toast.LENGTH_LONG).show();
                 finish();
             }
         };
@@ -252,7 +252,7 @@ public class GeoFenceActivity extends Activity implements OnMapReadyCallback, Vi
 
                             if (isGeofenceCorrect) {
 
-                                Toast.makeText(GeoFenceActivity.this, "GeoFence가 설정되었습니다!!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(GeoFenceActivity.this, "GeoFence is set-up!", Toast.LENGTH_SHORT).show();
 
                                 Intent reLaunchMain=new Intent(GeoFenceActivity.this,MainActivity.class);
                                 reLaunchMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -261,7 +261,7 @@ public class GeoFenceActivity extends Activity implements OnMapReadyCallback, Vi
 
 
                             } else {
-                                Toast.makeText(GeoFenceActivity.this, "GeoFence가 설정가 설정되지 않았습니다. 관리자에게 문의하세요.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(GeoFenceActivity.this, "GeoFence has some problem. Please contact administrater", Toast.LENGTH_SHORT).show();
                                 finish();
                             }
                         }

@@ -34,6 +34,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -93,10 +94,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Locale.setDefault(new Locale ("en", "US"));
+
+
         setContentView(R.layout.activity_main);
-
-
-
 
 
         loginLayout = (RelativeLayout) findViewById(R.id.login_layout);
@@ -119,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         progDialog2 = new ProgressDialog(this);
         progDialog2.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progDialog2.setMessage("데이터를 받아오는 중입니다...");
+        progDialog2.setMessage("Receiving data...");
         progDialog2.setCancelable(true);
         progDialog2.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
@@ -160,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         progDialog = new ProgressDialog(this);
         progDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progDialog.setMessage("데이터를 받아오는 중입니다....");
+        progDialog.setMessage("Receiving data....");
         progDialog.show();
 
 
@@ -172,6 +173,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     temperatureAverage.setText(String.valueOf(weatherInfo.getTemperature()) + "°C");
                     temperatureMax.setText("최고 : " + weatherInfo.getMaxTemperature() + "°C");
                     temperatureMin.setText("최저 : " + weatherInfo.getMinTemperature() + "°C");
+
+                    //to english..
+                    weatherStatus.setText("Cloudy ,");
+                    temperatureAverage.setText("20.7°C");
+                    temperatureMax.setText("max: 24.1°C");
+                    temperatureMin.setText("min : 16.0°C");
                 }
             }
         };
@@ -237,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         myLocationHandler2 = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                Toast.makeText(MainActivity.this, "데이터를 읽어오는데 오류가 생겼습니다 관리자에게 문의하세요.", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Data read is abnormaly done. Please contact administrator", Toast.LENGTH_LONG).show();
             }
         };
 
@@ -324,18 +331,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     void getWeather() {
-        Log.e("weather", "lat,long" + latitude + "," + longitude);
         WeatherRequest weatherRequest = new WeatherRequest(latitude, longitude);
         weatherInfo = weatherRequest.getWeatherInformation();
-
-
-        Log.e("weather", "weatherInfo.status:" + weatherInfo.getStatus());
-        Log.e("weather", "weatherInfo.loca:" + weatherInfo.getLocation());
-        Log.e("weather", "weatherInfo.skyinfo:" + weatherInfo.getSkyInfo());
-        Log.e("weather", "weatherInfo.temperature:" + weatherInfo.getTemperature());
-        Log.e("weather", "weatherInfo.maxT:" + weatherInfo.getMaxTemperature());
-        Log.e("weather", "weatherInfo.minT:" + weatherInfo.getMinTemperature());
-        Log.e("weather", "weatherInfo.obser:" + weatherInfo.getTimeObservation());
     }
 
 
@@ -352,28 +349,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     introduceBackgroundLayout.setBackgroundColor(0xff86786e);
                     introduceBackgroundLayout.invalidate();
                     introduceMenuTitle.setText("GeoFence");
-                    introduceMenuInfo.setText("GeoFence를 활용하여 도난방지 기능을 사용합니다.");
+                    introduceMenuInfo.setText("Execute burglar alarm system with GeoFence");
                     setArrowImageVisible(0);
                     menuNumber = 0;
                     break;
                 case R.id.menu02_button:
                     introduceBackgroundLayout.setBackgroundColor(0xff2db6c9);
                     introduceMenuTitle.setText("DragonSNS");
-                    introduceMenuInfo.setText("DragonSNS로 친구를 만나보세요.");
+                    introduceMenuInfo.setText("Meet social friends with DragonSNS");
                     setArrowImageVisible(1);
                     menuNumber = 1;
                     break;
                 case R.id.menu03_button:
                     introduceBackgroundLayout.setBackgroundColor(0xff115486);
                     introduceMenuTitle.setText("Exercise");
-                    introduceMenuInfo.setText("운동을 기록할 수 있습니다.");
+                    introduceMenuInfo.setText("Record exercise");
                     setArrowImageVisible(2);
                     menuNumber = 2;
                     break;
                 case R.id.menu04_button:
                     introduceBackgroundLayout.setBackgroundColor(0xfffe9200);
                     introduceMenuTitle.setText("Log");
-                    introduceMenuInfo.setText("운동 기록을 볼 수 있습니다.");
+                    introduceMenuInfo.setText("Review exercise log");
                     setArrowImageVisible(3);
                     menuNumber = 3;
                     break;
@@ -392,10 +389,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                             if (isGeofenceCorrect) {
 
-                                Toast.makeText(MainActivity.this, "GeoFence가 해제되었습니다!!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, "GeoFence is release!!", Toast.LENGTH_SHORT).show();
                                 recreate();
                             } else {
-                                Toast.makeText(MainActivity.this, "GeoFence가 정상적으로 해제되지 않았습니다! 관리자에게 문의하세요.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, "GeoFence is abnormaly release! Please contact administrator.", Toast.LENGTH_SHORT).show();
                                 recreate();
                             }
                         }
@@ -436,7 +433,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
 
-                        Toast.makeText(MainActivity.this, "로그인 완료", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, "Log in done.", Toast.LENGTH_LONG).show();
 
 
                         SharedPreferences prefs = getSharedPreferences("LoginData", MODE_PRIVATE);
@@ -448,7 +445,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         loginLayout.setVisibility(View.GONE);
                     } else {
-                        Toast.makeText(MainActivity.this, "사용자 정보가 없거나 서버에 문제가 생겼습니다. 관리자에게 문의하세요.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, "Server is blow out. Please contact administrator", Toast.LENGTH_LONG).show();
                     }
                 }
             };
@@ -534,6 +531,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onDestroy() {
         Log.i("test", "onDstory()");
         mTimer.cancel();
+        mWeatherTimer.cancel();
         super.onDestroy();
     }
 
