@@ -11,8 +11,10 @@ import android.location.LocationListener;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.location.LocationManager;
 import android.view.View;
@@ -120,12 +122,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         progDialog2 = new ProgressDialog(this);
         progDialog2.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progDialog2.setMessage("Receiving data...");
+        progDialog2.setMessage("Receiving Weather data...");
         progDialog2.setCancelable(true);
         progDialog2.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                finish();
+                //finish();
             }
         });
 
@@ -161,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         progDialog = new ProgressDialog(this);
         progDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progDialog.setMessage("Receiving data....");
+        progDialog.setMessage("Receiving GEO data....");
         progDialog.show();
 
 
@@ -192,6 +194,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 boolean isUserDataExist = false;
                 int userIndex = 0;
                 for (int i = 0; i < geofenceInfoArray.length; i++) {
+
                     if (geofenceInfoArray[i].getStatus() == true) {
                         SharedPreferences pref = getSharedPreferences("LoginData", MODE_PRIVATE);
                         String myId = pref.getString("LoginId", "");
@@ -219,14 +222,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     latitude =Double.parseDouble(geofenceInfoArray[userIndex].getLatitude());
                     longitude=Double.parseDouble(geofenceInfoArray[userIndex].getLongitude());
 
-                    progDialog.dismiss();
-
 
 
                     // and check user has geofence information if it is please view to gone..
 
                     Log.e("check geofence","geofence? : "+geofenceInfoArray[userIndex].getGenfenceExist());
-
 
                     if(geofenceInfoArray[userIndex].getGenfenceExist()){
                         //true genfence is exist..
@@ -236,7 +236,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         geofenceLayout.setVisibility(View.GONE);
 
                     }
+
                 }
+
 
             }
         };
@@ -245,6 +247,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void handleMessage(Message msg) {
                 Toast.makeText(MainActivity.this, "Data read is abnormaly done. Please contact administrator", Toast.LENGTH_LONG).show();
+                finish();
             }
         };
 
@@ -267,6 +270,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             myLocationHandler2.sendEmptyMessage(0);
                             finish();
                         }
+
+                        progDialog.dismiss();
                     }
                 }
                 ).start();
@@ -274,8 +279,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         };
 
         mTimer = new Timer();
-        mTimer.schedule(mTask, 1000, 10000);
-
+        mTimer.schedule(mTask, 1000, 30000);
 
 
         mWeatherTask = new TimerTask() {
@@ -304,9 +308,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
 
-
-
-
         if (getIntent().getExtras() != null) {
             for (String key : getIntent().getExtras().keySet()) {
                 Object value = getIntent().getExtras().get(key);
@@ -321,6 +322,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }else{
             //로그인정보가 없음녀 로그인화면을 보여주고 프로그래스 다이얼로그를 없애버린다 로그인할수있도록
             progDialog.dismiss();
+            progDialog2.dismiss();
         }
 
 
@@ -381,38 +383,49 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     Button.OnClickListener mGeofenceUnlockListener = new View.OnClickListener() {
         public void onClick(View v) {
 
+            AlertDialog.Builder ab = new AlertDialog.Builder(MainActivity.this);
+            ab.setMessage("Are you sure release GeoFence?");
+            ab.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
 
-            final Handler geofenceHandler = new
-                    Handler() {
+
+
+                    final Handler geofenceHandler = new
+                            Handler() {
+                                @Override
+                                public void handleMessage(Message msg) {
+
+                                    if (isGeofenceCorrect) {
+
+                                        Toast.makeText(MainActivity.this, "GeoFence is release!!", Toast.LENGTH_SHORT).show();
+                                        recreate();
+                                    } else {
+                                        Toast.makeText(MainActivity.this, "GeoFence is abnormaly release! Please contact administrator.", Toast.LENGTH_SHORT).show();
+                                        recreate();
+                                    }
+                                }
+                            };
+
+                    isGeofenceCorrect = false;
+
+                    new Thread(new Runnable() {
                         @Override
-                        public void handleMessage(Message msg) {
-
-                            if (isGeofenceCorrect) {
-
-                                Toast.makeText(MainActivity.this, "GeoFence is release!!", Toast.LENGTH_SHORT).show();
-                                recreate();
-                            } else {
-                                Toast.makeText(MainActivity.this, "GeoFence is abnormaly release! Please contact administrator.", Toast.LENGTH_SHORT).show();
-                                recreate();
-                            }
+                        public void run() {
+                            GeofenceRequest geofenceRequest = new GeofenceRequest();
+                            SharedPreferences pref = getSharedPreferences("LoginData", MODE_PRIVATE);
+                            String myId = pref.getString("LoginId", "");
+                            isGeofenceCorrect = geofenceRequest.sendGeofence(myId,"","","","");
+                            geofenceHandler.sendEmptyMessage(0);
                         }
-                    };
+                    }
+                    ).start();
 
-            isGeofenceCorrect = false;
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    GeofenceRequest geofenceRequest = new GeofenceRequest();
-                    SharedPreferences pref = getSharedPreferences("LoginData", MODE_PRIVATE);
-                    String myId = pref.getString("LoginId", "");
-                    isGeofenceCorrect = geofenceRequest.sendGeofence(myId,"","","","");
-                    geofenceHandler.sendEmptyMessage(0);
+
                 }
-            }
-            ).start();
-
-
+            });
+            ab.setNegativeButton("NO",null);
+            ab.show();
 
 
         }
@@ -431,11 +444,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     if (isUserExist) {
 
-
-
                         Toast.makeText(MainActivity.this, "Log in done.", Toast.LENGTH_LONG).show();
-
-
                         SharedPreferences prefs = getSharedPreferences("LoginData", MODE_PRIVATE);
                         SharedPreferences.Editor editor = prefs.edit();
                         editor.putString("LoginId", inputId);
@@ -455,22 +464,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     LoginRequest loginRequest = new LoginRequest();
                     isUserExist = loginRequest.isUserExist(inputId, inputPassword);
 
-
                     if(isUserExist){
-                        //send token to user data
-
                         String token = FirebaseInstanceId.getInstance().getToken();
-
-
                         TokenRequest tokenRequest = new TokenRequest();
                         tokenRequest.sendToken(inputId, token);
-
-
-
                     }
-
-
-
 
                     handler.sendEmptyMessage(0);
                 }
@@ -482,7 +480,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     Button.OnClickListener startMenuButtonClickListener = new View.OnClickListener() {
         public void onClick(View v) {
-            Intent intent;
+            final Intent intent;
             switch (menuNumber) {
                 case 0:
                     intent = new Intent(MainActivity.this, GeoFenceActivity.class);
@@ -494,7 +492,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     break;
                 case 2:
                     intent = new Intent(MainActivity.this, ExerciseGoActivity.class);
-                    startActivity(intent);
+                    AlertDialog.Builder ab = new AlertDialog.Builder(MainActivity.this);
+                    ab.setMessage("Are you sure, you want to exercise now?");
+                    ab.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            startActivity(intent);
+                        }
+                    });
+                    ab.setNegativeButton("NO",null);
+                    ab.show();
                     break;
                 case 3:
                     intent = new Intent(MainActivity.this, ExerciseListActivity.class);
@@ -529,10 +535,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     protected void onDestroy() {
-        Log.i("test", "onDstory()");
         mTimer.cancel();
         mWeatherTimer.cancel();
         super.onDestroy();
     }
+
+
 
 }

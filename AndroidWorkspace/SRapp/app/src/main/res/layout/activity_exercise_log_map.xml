@@ -4,13 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#2a7aca"
-    tools:context="riders.gumjung.smart.smartridingservice.ExerciseListActivity">
+    tools:context="riders.gumjung.smart.smartridingservice.ExerciseGoActivity">
 
 
-    <ListView
-        android:id="@+id/listview"
+    <fragment
+        android:id="@+id/map_exercise_log_review"
+        class="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        />
+        android:layout_margin="5dp" />
+
 
 </RelativeLayout>

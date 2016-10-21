@@ -58,7 +58,7 @@ public class GeofenceGetRequest {
                     geoInfo[i].setLongitude(locationObj.getString("longitude"));
                     geoInfo[i].setLatitude(locationObj.getString("latitude"));
                 } catch (Exception e) {
-                    geoInfo[i].setStatus(false);
+                    geoInfo[i].setStatus(true);
                     geoInfo[i].setLongitude("0");
                     geoInfo[i].setLatitude("0");
                 }
@@ -68,6 +68,8 @@ public class GeofenceGetRequest {
                 } else {
                     geoInfo[i].setGeofenceExist(true);
                 }
+
+
             }
         } catch (Exception e) {
             geoInfo[0] = new GeofenceInfo();

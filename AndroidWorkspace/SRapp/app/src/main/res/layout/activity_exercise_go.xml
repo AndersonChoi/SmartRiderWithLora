@@ -10,8 +10,29 @@
     <fragment
         android:id="@+id/map_exercise"
         class="com.google.android.gms.maps.MapFragment"
-        android:layout_width="300dp"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
         android:layout_margin="5dp" />
+
+    <RelativeLayout
+        android:layout_below="@id/map_exercise"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2.41Km/h"
+            android:textColor="#fff"
+            android:textSize="60dp"
+            android:layout_centerHorizontal="true"
+            />
+
+
+
+
+
+    </RelativeLayout>
 
 </RelativeLayout>

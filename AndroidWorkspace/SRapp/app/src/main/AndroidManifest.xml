@@ -27,6 +27,8 @@
             android:keepScreenOn="true"/>
         <activity android:name=".ExerciseListActivity" android:screenOrientation="portrait"
             android:keepScreenOn="true"/>
+        <activity android:name=".ExerciseListLogMapActivity" android:screenOrientation="portrait"
+            android:keepScreenOn="true"/>
 
 
         <meta-data
