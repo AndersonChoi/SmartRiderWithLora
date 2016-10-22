@@ -23,11 +23,11 @@ public class ExerciseGoActivity extends AppCompatActivity {
 
 
 
+
+
+
+
     }
-
-
-
-
 
 
     @Override

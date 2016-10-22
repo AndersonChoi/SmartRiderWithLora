@@ -1,5 +1,7 @@
 package riders.gumjung.smart.smartridingservice;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -28,6 +30,7 @@ public class ExerciseListActivity extends AppCompatActivity {
 
     private ListView  m_ListView;
     private ArrayAdapter<String> m_Adapter;
+    private ProgressDialog progDialog2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,19 @@ public class ExerciseListActivity extends AppCompatActivity {
         Locale.setDefault(new Locale ("en", "US"));
         setContentView(R.layout.activity_exercise_list);
 
+
+
+        progDialog2 = new ProgressDialog(this);
+        progDialog2.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progDialog2.setMessage("Receiving log data...");
+        progDialog2.setCancelable(true);
+        progDialog2.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                finish();
+            }
+        });
+        progDialog2.show();
 
         m_Adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1);
         m_ListView = (ListView) findViewById(R.id.listview);
@@ -70,6 +86,8 @@ public class ExerciseListActivity extends AppCompatActivity {
                     public void run() {
                         for(int i=0;i<items.size();i++)
                             m_Adapter.add(items.get(i));
+
+                        progDialog2.dismiss();
                     }
                 });
 
@@ -85,7 +103,6 @@ public class ExerciseListActivity extends AppCompatActivity {
 
         @Override
         public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-            Toast.makeText(getApplicationContext(), "arg2 : "+(arg2+1), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(ExerciseListActivity.this, ExerciseListLogMapActivity.class);
             intent.putExtra("number",(arg2+1));
             startActivity(intent);
