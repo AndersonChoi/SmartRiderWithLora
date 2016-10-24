@@ -70,14 +70,20 @@ public class ExerciseListActivity extends AppCompatActivity {
                 int trackingCount = getTrackingCount.getCount(pref.getString("LoginId", ""));
                 GetDeviceId getDeviceId = new GetDeviceId();
                 int deviceId = getDeviceId.getId(pref.getString("LoginId", ""));
+
+
                 for(int i=1;i<trackingCount+1;i++)//because tracking number start 1
                 {
-                    GetTrackingTime getTrackingTime = new GetTrackingTime();
-                    String log = getTrackingTime.getTimeLog(deviceId,i);
-                    String exerciseDate = log.substring(0,10);
-                    String exerciseStartTime = log.substring(log.indexOf("T")+1,log.indexOf("|")-5);
-                    items.add("No."+i+"\nDate : "+exerciseDate+"\nStart time :"+exerciseStartTime);
-                    Log.e("LISTVIEW",i+"번째는 "+log);
+                    try {
+                        GetTrackingTime getTrackingTime = new GetTrackingTime();
+                        String log = getTrackingTime.getTimeLog(deviceId, i);
+                        String exerciseDate = log.substring(0, 10);
+                        String exerciseStartTime = log.substring(log.indexOf("T") + 1, log.indexOf("|") - 5);
+                        items.add("No." + i + "\nDate : " + exerciseDate + "\nStart time :" + exerciseStartTime);
+                        Log.e("LISTVIEW", i + "번째는 " + log);
+                    }catch(Exception e){
+                        Log.e("list","e : "+e);
+                    }
                 }
                 Log.e("LISTVIEW","end get!!!");
 

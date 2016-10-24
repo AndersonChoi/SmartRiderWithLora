@@ -16,14 +16,14 @@ import java.net.URL;
  */
 public class GeofenceGetRequest {
 
-    private GeofenceInfo[] geoInfo;
+    private GeofenceInfoDO[] geoInfo;
     private static String CONTENT_TYPE = "application/json";
 
     public GeofenceGetRequest() {
 
     }
 
-    public GeofenceInfo[] getGeofenceInfo() throws Exception {
+    public GeofenceInfoDO[] getGeofenceInfo() throws Exception {
 
 
         try {
@@ -36,12 +36,12 @@ public class GeofenceGetRequest {
 
             JSONArray userArray = new JSONArray(jsonString);
 
-            geoInfo = new GeofenceInfo[userArray.length()];
+            geoInfo = new GeofenceInfoDO[userArray.length()];
 
             for (int i = 0; i < userArray.length(); i++) {
 
                 JSONObject insideObject = userArray.getJSONObject(i);
-                geoInfo[i] = new GeofenceInfo();
+                geoInfo[i] = new GeofenceInfoDO();
                 geoInfo[i].setStatus(true);
                 geoInfo[i].setUserId(insideObject.getString("id"));
                 geoInfo[i].setEndDeviceId(insideObject.getString("end_device_id"));
@@ -72,7 +72,7 @@ public class GeofenceGetRequest {
 
             }
         } catch (Exception e) {
-            geoInfo[0] = new GeofenceInfo();
+            geoInfo[0] = new GeofenceInfoDO();
             geoInfo[0].setStatus(false);
         }
 

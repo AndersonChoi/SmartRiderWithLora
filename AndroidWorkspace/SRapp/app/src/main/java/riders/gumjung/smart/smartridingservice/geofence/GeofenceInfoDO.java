@@ -4,7 +4,7 @@ package riders.gumjung.smart.smartridingservice.geofence;
  * Created by HackerAnderson on 2016. 9. 28..
  */
 
-public class GeofenceInfo {
+public class GeofenceInfoDO {
 
     private String id;
     private String snsMessage;
@@ -16,7 +16,7 @@ public class GeofenceInfo {
     private boolean isGeofenceExist;
 
 
-    public GeofenceInfo() {
+    public GeofenceInfoDO() {
 
     }
 

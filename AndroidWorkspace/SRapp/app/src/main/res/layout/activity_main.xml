@@ -99,15 +99,6 @@
 
     </RelativeLayout>
 
-    <fragment
-        android:id="@+id/map"
-        class="com.google.android.gms.maps.MapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="230dp"
-        android:layout_below="@id/weather_layout"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp" />
 
     <RelativeLayout
         android:id="@+id/introduce_menu"
@@ -159,10 +150,10 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/tab_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/introduce_menu"
-        android:layout_below="@id/map">
+        android:layout_height="130dp"
+        android:layout_above="@id/introduce_menu">
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -345,6 +336,32 @@
 
     </LinearLayout>
 
+
+    <fragment
+        android:id="@+id/map"
+        class="com.google.android.gms.maps.MapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/tab_layout"
+        android:layout_below="@id/weather_layout"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp" />
+
+
+    <net.steamcrafted.materialiconlib.MaterialIconView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/direction_icon"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_above="@id/tab_layout"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"
+        android:background="#00ffffff"
+        app:materialIcon="directions"
+        app:materialIconColor="#000"
+        app:materialIconSize="60dp" />
+
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="3dp"
@@ -352,70 +369,66 @@
         android:background="#ffffff" />
 
 
-
     <RelativeLayout
         android:id="@+id/geofence_lock_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
-        android:background="#000">
+        android:background="#000"
+        android:visibility="visible">
+
         <RelativeLayout
-            android:layout_centerInParent="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+
             <TextView
-                android:layout_marginTop="1dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="1dp"
+                android:layout_marginTop="1dp"
+                android:text="[Geofence is activated]"
                 android:textColor="#fff"
-                android:textSize="30dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="[Geofence is activated]"
-                />
+                android:textSize="30dp" />
+
             <TextView
-                android:textColor="#f00"
                 android:layout_width="wrap_content"
-                android:textSize="30dp"
                 android:layout_height="wrap_content"
                 android:text="[Geofence is activated]"
-                />
+                android:textColor="#f00"
+                android:textSize="30dp" />
         </RelativeLayout>
 
 
         <RelativeLayout
-            android:background="#fff"
-            android:layout_margin="10dp"
             android:layout_width="match_parent"
+            android:layout_height="80dp"
             android:layout_alignParentBottom="true"
-            android:layout_height="80dp">
+            android:layout_margin="10dp"
+            android:background="#fff">
+
             <ImageView
-                android:layout_margin="1dp"
-                android:src="#000"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_margin="1dp"
+                android:src="#000" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:text="Release GeeFence"
                 android:textColor="#fff"
-                android:textSize="20dp"
-                android:layout_centerInParent="true"/>
+                android:textSize="20dp" />
         </RelativeLayout>
 
         <Button
             android:id="@+id/geofence_unlock_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text=""
             android:background="#00ffffff"
-            />
+            android:text="" />
 
     </RelativeLayout>
-
-
-
-
-
 
 
     <RelativeLayout
@@ -458,8 +471,8 @@
                 android:id="@+id/login_password_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:lines="1"/>
+                android:lines="1"
+                android:singleLine="true" />
 
             <Button
                 android:id="@+id/login_button"

@@ -7,32 +7,107 @@
     tools:context="riders.gumjung.smart.smartridingservice.ExerciseGoActivity">
 
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/map_go_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_alignParentBottom="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/go_speed_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="0Km/h"
+                android:textColor="#fff"
+                android:textSize="60dp" />
+        </RelativeLayout>
+
+
+        <ImageView
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:src="#50ffffff"
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Exercise time"
+                android:textColor="#fff"
+                android:textStyle="bold"
+                android:textSize="26dp" />
+
+            <TextView
+                android:id="@+id/go_exercise_time"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#fff"
+                android:textSize="26dp" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
     <fragment
         android:id="@+id/map_exercise"
         class="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="match_parent"
+        android:layout_above="@id/map_go_layout"
         android:layout_margin="5dp" />
 
+
+
+    <ImageView
+        android:id="@+id/live_icon_imageview"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:scaleType="fitStart"
+        android:src="@drawable/live_icon" />
+
+
+    <ImageView
+        android:id="@+id/pointer"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_margin="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/compass" />
+
+
+
     <RelativeLayout
-        android:layout_below="@id/map_exercise"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_above="@id/map_go_layout"
+        android:layout_margin="5dp" >
 
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2.41Km/h"
-            android:textColor="#fff"
-            android:textSize="60dp"
-            android:layout_centerHorizontal="true"
-            />
-
-
-
-
-
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/red_dot"
+        />
     </RelativeLayout>
 
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#00ffffff"
+        />
 </RelativeLayout>

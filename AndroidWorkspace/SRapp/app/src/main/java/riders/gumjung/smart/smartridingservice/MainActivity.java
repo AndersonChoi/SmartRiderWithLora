@@ -1,20 +1,18 @@
 package riders.gumjung.smart.smartridingservice;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
 import android.location.LocationManager;
 import android.view.View;
@@ -25,13 +23,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.Geofence;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -40,9 +36,8 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import riders.gumjung.smart.smartridingservice.dragonSns.DragonSnsRequest;
 import riders.gumjung.smart.smartridingservice.geofence.GeofenceGetRequest;
-import riders.gumjung.smart.smartridingservice.geofence.GeofenceInfo;
+import riders.gumjung.smart.smartridingservice.geofence.GeofenceInfoDO;
 import riders.gumjung.smart.smartridingservice.geofence.GeofenceRequest;
 import riders.gumjung.smart.smartridingservice.login.LoginRequest;
 import riders.gumjung.smart.smartridingservice.token.TokenRequest;
@@ -74,13 +69,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private RelativeLayout geofenceLayout;
     private Button geofenceUnlockButton;
 
+    private String startLatitude = "";
+    private String startLongitude = "";
+    private String endLatitude = "";
+    private String endLongitude = "";
 
     private GoogleMap map;
     private double myLatitude = 0;
     private double myLongitude = 0;
     private Handler myLocationHandler, myLocationHandler2;
-    private GeofenceInfo[] geofenceInfoArray;
-    private  Boolean isGeofenceCorrect=false;
+    private GeofenceInfoDO[] geofenceInfoDOArray;
+    private Boolean isGeofenceCorrect = false;
 
     private static final String TAG = "MainActivity";
 
@@ -92,11 +91,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TimerTask mWeatherTask;
     private Timer mWeatherTimer;
 
+
+    private ImageView locationIcon;
+
+    private LocationManager mLocationManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Locale.setDefault(new Locale ("en", "US"));
+        Locale.setDefault(new Locale("en", "US"));
 
 
         setContentView(R.layout.activity_main);
@@ -116,6 +120,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         idEditText.setText(pref.getString("LoginId", ""));
         passwordEditText.setText(pref.getString("LoginPassword", ""));
 
+        locationIcon = (ImageView) findViewById(R.id.direction_icon);
+
 
         //check geofence in this
 
@@ -123,13 +129,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         progDialog2 = new ProgressDialog(this);
         progDialog2.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progDialog2.setMessage("Receiving Weather data...");
-        progDialog2.setCancelable(true);
-        progDialog2.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                //finish();
-            }
-        });
+        progDialog2.setCancelable(false);
 
 
         //check geofence end..
@@ -155,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         menuButtonExercise.setOnClickListener(menuButtonClickListener);
         menuButtonLog.setOnClickListener(menuButtonClickListener);
         startMenuButton.setOnClickListener(startMenuButtonClickListener);
+        locationIcon.setOnClickListener(locationIconButtonClickListener);
 
 
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
@@ -164,7 +165,31 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         progDialog = new ProgressDialog(this);
         progDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progDialog.setMessage("Receiving GEO data....");
+        progDialog2.setCancelable(false);
         progDialog.show();
+
+
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+
+        if (mLocationManager != null) {
+            if (checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                    || checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
+                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
+
+            }
+        }
+
+        String locationProvider = LocationManager.GPS_PROVIDER;
+        Location lastKnownLocation = mLocationManager.getLastKnownLocation(locationProvider);
+        if (lastKnownLocation != null) {
+            double lng = lastKnownLocation.getLatitude();
+            double lat = lastKnownLocation.getLatitude();
+            Log.e("Main", "longtitude=" + lng + ", latitude=" + lat);
+            startLongitude=""+lng;
+            startLatitude=""+lat;
+        }
 
 
         updateUIHandler = new Handler() {
@@ -193,12 +218,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 boolean isUserDataExist = false;
                 int userIndex = 0;
-                for (int i = 0; i < geofenceInfoArray.length; i++) {
+                for (int i = 0; i < geofenceInfoDOArray.length; i++) {
 
-                    if (geofenceInfoArray[i].getStatus() == true) {
+                    if (geofenceInfoDOArray[i].getStatus() == true) {
                         SharedPreferences pref = getSharedPreferences("LoginData", MODE_PRIVATE);
                         String myId = pref.getString("LoginId", "");
-                        if (geofenceInfoArray[i].getUserId().equals(myId)) {
+                        if (geofenceInfoDOArray[i].getUserId().equals(myId)) {
                             isUserDataExist = true;
                             userIndex = i;
                             break;
@@ -207,8 +232,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
 
                 if (isUserDataExist) {
-                    myLatitude = Double.parseDouble(geofenceInfoArray[userIndex].getLatitude());
-                    myLongitude = Double.parseDouble(geofenceInfoArray[userIndex].getLongitude());
+                    myLatitude = Double.parseDouble(geofenceInfoDOArray[userIndex].getLatitude());
+                    myLongitude = Double.parseDouble(geofenceInfoDOArray[userIndex].getLongitude());
 
                     map.addMarker(new MarkerOptions()
                             .position(new LatLng(myLatitude, myLongitude))
@@ -216,23 +241,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     .defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                     );
 
-                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(geofenceInfoArray[userIndex].getLatitude()),
-                            Double.parseDouble(geofenceInfoArray[userIndex].getLongitude())), 17));
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(geofenceInfoDOArray[userIndex].getLatitude()),
+                            Double.parseDouble(geofenceInfoDOArray[userIndex].getLongitude())), 17));
 
-                    latitude =Double.parseDouble(geofenceInfoArray[userIndex].getLatitude());
-                    longitude=Double.parseDouble(geofenceInfoArray[userIndex].getLongitude());
+                    latitude = Double.parseDouble(geofenceInfoDOArray[userIndex].getLatitude());
+                    longitude = Double.parseDouble(geofenceInfoDOArray[userIndex].getLongitude());
 
+                    endLatitude = "" + geofenceInfoDOArray[userIndex].getLatitude();
+                    endLongitude = "" + geofenceInfoDOArray[userIndex].getLongitude();
 
-
-                    // and check user has geofence information if it is please view to gone..
-
-                    Log.e("check geofence","geofence? : "+geofenceInfoArray[userIndex].getGenfenceExist());
-
-                    if(geofenceInfoArray[userIndex].getGenfenceExist()){
-                        //true genfence is exist..
+                    if (geofenceInfoDOArray[userIndex].getGenfenceExist()) {
                         geofenceLayout.setVisibility(View.VISIBLE);
 
-                    }else{
+                    } else {
                         geofenceLayout.setVisibility(View.GONE);
 
                     }
@@ -252,7 +273,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         };
 
 
-
         mTask = new TimerTask() {
             @Override
             public void run() {
@@ -263,10 +283,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         GeofenceGetRequest geofenceRequest = new GeofenceGetRequest();
                         try {
                             Log.e("geofence", "get Array");
-                            geofenceInfoArray = geofenceRequest.getGeofenceInfo();
+                            geofenceInfoDOArray = geofenceRequest.getGeofenceInfo();
                             myLocationHandler.sendEmptyMessage(0);
                         } catch (Exception e) {
-                            Log.e("error..","e:"+e);
+                            Log.e("error..", "e:" + e);
                             myLocationHandler2.sendEmptyMessage(0);
                             finish();
                         }
@@ -294,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             getWeather();
                             updateUIHandler.sendEmptyMessage(0);
                         } catch (Exception e) {
-                            Log.e("error..","e:"+e);
+                            Log.e("error..", "e:" + e);
                             myLocationHandler2.sendEmptyMessage(0);
                             finish();
                         }
@@ -305,7 +325,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         };
         mWeatherTimer = new Timer();
         mWeatherTimer.schedule(mWeatherTask, 3000);
-
 
 
         if (getIntent().getExtras() != null) {
@@ -319,14 +338,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if ((pref.getString("LoginId", "").length() != 0) && (pref.getString("LoginPassword", "").length() != 0)) {
             //로그인 정보가 있으면 바로 로그인 화면을 없애버린다.
             loginLayout.setVisibility(View.GONE);
-        }else{
+        } else {
             //로그인정보가 없음녀 로그인화면을 보여주고 프로그래스 다이얼로그를 없애버린다 로그인할수있도록
             progDialog.dismiss();
             progDialog2.dismiss();
         }
-
-
-
 
 
     }
@@ -389,7 +405,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 public void onClick(DialogInterface dialog, int id) {
 
 
-
                     final Handler geofenceHandler = new
                             Handler() {
                                 @Override
@@ -414,17 +429,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             GeofenceRequest geofenceRequest = new GeofenceRequest();
                             SharedPreferences pref = getSharedPreferences("LoginData", MODE_PRIVATE);
                             String myId = pref.getString("LoginId", "");
-                            isGeofenceCorrect = geofenceRequest.sendGeofence(myId,"","","","");
+                            isGeofenceCorrect = geofenceRequest.sendGeofence(myId, "", "", "", "");
                             geofenceHandler.sendEmptyMessage(0);
                         }
                     }
                     ).start();
 
 
-
                 }
             });
-            ab.setNegativeButton("NO",null);
+            ab.setNegativeButton("NO", null);
             ab.show();
 
 
@@ -464,7 +478,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     LoginRequest loginRequest = new LoginRequest();
                     isUserExist = loginRequest.isUserExist(inputId, inputPassword);
 
-                    if(isUserExist){
+                    if (isUserExist) {
                         String token = FirebaseInstanceId.getInstance().getToken();
                         TokenRequest tokenRequest = new TokenRequest();
                         tokenRequest.sendToken(inputId, token);
@@ -493,13 +507,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 case 2:
                     intent = new Intent(MainActivity.this, ExerciseGoActivity.class);
                     AlertDialog.Builder ab = new AlertDialog.Builder(MainActivity.this);
-                    ab.setMessage("Are you sure, you want to exercise now?");
+                    ab.setTitle("Are you sure, you want to exercise now?");
+                    ab.setMessage("For your safety, the rider should not operate the controls while driving. \nAlso, while riding, keep the volume to a level at which external sounds can be heard.");
+                    ab.setIcon(R.drawable.ic_launcher);
                     ab.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             startActivity(intent);
                         }
                     });
-                    ab.setNegativeButton("NO",null);
+                    ab.setNegativeButton("NO", null);
                     ab.show();
                     break;
                 case 3:
@@ -510,6 +526,41 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     };
 
+    Button.OnClickListener locationIconButtonClickListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            Toast.makeText(MainActivity.this, "Show route to bicycle", Toast.LENGTH_LONG).show();
+            String url = "daummaps://route?sp="+startLatitude+","+startLongitude+"&ep=" + endLatitude + "," + endLongitude + "&by=FOOT";
+            Log.e("location find","route "+url);
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(intent);
+        }
+    };
+
+
+    private final LocationListener mLocationListener = new LocationListener() {
+
+        @Override
+        public void onLocationChanged(Location location) {
+            // tv1.setText("Lat " +   location.getLatitude() + " Long " + location.getLongitude());
+
+            startLatitude = "" + location.getLatitude();
+            startLongitude = "" + location.getLongitude();
+
+            Log.e("position","lat : "+startLatitude+", long : "+startLongitude);
+
+
+        }
+
+        public void onProviderDisabled(String provider) {
+        }
+
+        public void onProviderEnabled(String provider) {
+        }
+
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+
+    };
 
     void setArrowImageVisible(int arrowNumber) {
         arrowImage01.setVisibility(View.GONE);
@@ -537,9 +588,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onDestroy() {
         mTimer.cancel();
         mWeatherTimer.cancel();
-        super.onDestroy();
-    }
 
+        super.onDestroy();
+
+    }
 
 
 }
