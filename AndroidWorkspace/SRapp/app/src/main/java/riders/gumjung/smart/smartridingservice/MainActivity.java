@@ -187,8 +187,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             double lng = lastKnownLocation.getLatitude();
             double lat = lastKnownLocation.getLatitude();
             Log.e("Main", "longtitude=" + lng + ", latitude=" + lat);
-            startLongitude=""+lng;
-            startLatitude=""+lat;
+            startLongitude = "" + lng;
+            startLatitude = "" + lat;
         }
 
 
@@ -216,6 +216,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void handleMessage(Message msg) {
 
 
+                Log.e("handler", " in myLocationHandler");
+
                 boolean isUserDataExist = false;
                 int userIndex = 0;
                 for (int i = 0; i < geofenceInfoDOArray.length; i++) {
@@ -232,6 +234,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
 
                 if (isUserDataExist) {
+
+
+                    Log.e("handler", " in isUserDataExist==true");
+
+
+                    Log.e("handler", " geofenceInfoDOArray[userIndex].getLatitude():" + geofenceInfoDOArray[userIndex].getLatitude());
+                    Log.e("handler", " geofenceInfoDOArray[userIndex].getLongitude():" + geofenceInfoDOArray[userIndex].getLongitude());
+
+
                     myLatitude = Double.parseDouble(geofenceInfoDOArray[userIndex].getLatitude());
                     myLongitude = Double.parseDouble(geofenceInfoDOArray[userIndex].getLongitude());
 
@@ -241,18 +252,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     .defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                     );
 
-                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(geofenceInfoDOArray[userIndex].getLatitude()),
-                            Double.parseDouble(geofenceInfoDOArray[userIndex].getLongitude())), 17));
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLatitude,myLongitude), 17));
 
-                    latitude = Double.parseDouble(geofenceInfoDOArray[userIndex].getLatitude());
-                    longitude = Double.parseDouble(geofenceInfoDOArray[userIndex].getLongitude());
+                    latitude = myLatitude;
+                    longitude = myLongitude;
 
                     endLatitude = "" + geofenceInfoDOArray[userIndex].getLatitude();
                     endLongitude = "" + geofenceInfoDOArray[userIndex].getLongitude();
 
+
+                    Log.e("handler", "endLatitude:"+endLatitude);
+                    Log.e("handler", "endLongitude:"+endLongitude);
+
                     if (geofenceInfoDOArray[userIndex].getGenfenceExist()) {
                         geofenceLayout.setVisibility(View.VISIBLE);
-
                     } else {
                         geofenceLayout.setVisibility(View.GONE);
 
@@ -529,8 +542,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     Button.OnClickListener locationIconButtonClickListener = new View.OnClickListener() {
         public void onClick(View v) {
             Toast.makeText(MainActivity.this, "Show route to bicycle", Toast.LENGTH_LONG).show();
-            String url = "daummaps://route?sp="+startLatitude+","+startLongitude+"&ep=" + endLatitude + "," + endLongitude + "&by=FOOT";
-            Log.e("location find","route "+url);
+            String url = "daummaps://route?sp=" + startLatitude + "," + startLongitude + "&ep=" + endLatitude + "," + endLongitude + "&by=FOOT";
+            Log.e("location find", "route " + url);
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(intent);
         }
@@ -546,7 +559,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             startLatitude = "" + location.getLatitude();
             startLongitude = "" + location.getLongitude();
 
-            Log.e("position","lat : "+startLatitude+", long : "+startLongitude);
+            Log.e("position", "lat : " + startLatitude + ", long : " + startLongitude);
 
 
         }

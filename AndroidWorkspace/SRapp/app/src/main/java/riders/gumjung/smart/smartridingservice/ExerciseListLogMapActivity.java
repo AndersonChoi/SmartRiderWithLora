@@ -54,7 +54,7 @@ public class ExerciseListLogMapActivity extends AppCompatActivity implements OnM
         exerciseEffect = (TextView) findViewById(R.id.log_exercise_effect);
 
 
-        progDialog2 = new ProgressDialog(this);
+        progDialog2 = new ProgressDialog(ExerciseListLogMapActivity.this);
         progDialog2.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progDialog2.setMessage("Receiving log data...");
         progDialog2.setCancelable(true);
@@ -83,9 +83,12 @@ public class ExerciseListLogMapActivity extends AppCompatActivity implements OnM
                 int deviceId = getDeviceId.getId(pref.getString("LoginId", ""));
 
                 Log.e("maplog", "get lat lng ");
-                RequestEndDeviceMapLog requestEndDeviceMapLog = new RequestEndDeviceMapLog();
-                final LatLng[] latLngs;
                 try {
+
+                    RequestEndDeviceMapLog requestEndDeviceMapLog = new RequestEndDeviceMapLog();
+                    final LatLng[] latLngs;
+
+                    Log.e("maplog", "deviceId:"+deviceId+"/number:"+number);
                     latLngs = requestEndDeviceMapLog.getMaps(deviceId, number);
                     Log.e("maplog", "latlng length:" + latLngs.length);
 

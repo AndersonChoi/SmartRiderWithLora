@@ -41,11 +41,12 @@ public class RequestEndDeviceMapLog {
         jsonString = GetHttpRequest(memberUrl);
         JSONArray userArray = new JSONArray(jsonString);
         latlngs = new LatLng[userArray.length()];
+
+        Log.e("maplog in Request", "length : "+userArray.length());
         for (int i = 0; i < userArray.length(); i++) {
             JSONObject insideObject = userArray.getJSONObject(i);
             latlngs[i] = new LatLng(Double.parseDouble(insideObject.getString("latitude")),
                     Double.parseDouble(insideObject.getString("longitude")));
-
         }
 
         return latlngs;

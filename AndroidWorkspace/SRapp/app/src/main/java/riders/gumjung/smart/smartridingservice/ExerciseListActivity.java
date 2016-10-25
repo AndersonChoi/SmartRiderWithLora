@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -75,6 +76,7 @@ public class ExerciseListActivity extends AppCompatActivity {
                 for(int i=1;i<trackingCount+1;i++)//because tracking number start 1
                 {
                     try {
+                        progDialog2.setMessage("Receiving log data..."+i+"/"+trackingCount);
                         GetTrackingTime getTrackingTime = new GetTrackingTime();
                         String log = getTrackingTime.getTimeLog(deviceId, i);
                         String exerciseDate = log.substring(0, 10);
@@ -109,8 +111,14 @@ public class ExerciseListActivity extends AppCompatActivity {
 
         @Override
         public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+
+            String toastMessage = ((TextView)arg1).getText().toString();
+            String number = toastMessage.substring(toastMessage.indexOf("No.")+3,toastMessage.indexOf("Date")-1);
+
+
+
             Intent intent = new Intent(ExerciseListActivity.this, ExerciseListLogMapActivity.class);
-            intent.putExtra("number",(arg2+1));
+            intent.putExtra("number",Integer.parseInt(number));
             startActivity(intent);
         }
     };
