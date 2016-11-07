@@ -6,8 +6,10 @@ var end_deviceSchema = new Schema({
 	latitude: { type: String, default: "" },
 	longitude: { type: String, default: "" },
 	acceleration: { type: String, default: "" },
+	battery: {type: Number, default: 100},
+	speed: { type: String, default: "" },
 	tracking_count: { type: Number, default: 0 },
-	time_stamp: { type: Date, default: Date.now }
+	time_stamp: Date
 },{
 	versionKey: false
 });
