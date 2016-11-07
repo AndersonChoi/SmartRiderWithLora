@@ -1,16 +1,18 @@
 {
-  "name": "riders",
-  "version": "0.0.1",
-  "description": "example",
-  "main": "app.js",
-  "scripts": {
-    "start": "node app.js"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "body-parser": "^1.15.2",
-    "express": "^4.14.0",
-    "mongoose": "^4.5.7"
-  }
+	"name": "riders",
+	"version": "0.0.1",
+	"description": "example",
+	"private": true,
+	"scripts": {
+		"start": "node app.js"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+	"body-parser": "^1.15.2",
+		"express": "^4.14.0",
+		"mongoose": "^4.5.7",
+		"cfenv": "1.0.x",
+		"ibmiotf": "*"
+	}
 }
