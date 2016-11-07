@@ -34,7 +34,8 @@
 
 * 담당자 : 김창현
   * [SR DB Interface](https://github.com/AndersonChoi/SmartRiderWithLora/wiki/SR-DB-Interface)
-
+  * [SR DB 구조](https://github.com/AndersonChoi/SmartRiderWithLora/wiki/SR-DB-Interface---DB%EA%B5%AC%EC%A1%B0)
+  
 * 담당자 : 박정빈
   * [SR LoRa 통신](https://github.com/AndersonChoi/SmartRiderWithLora/wiki/SR-LoRa-%ED%86%B5%EC%8B%A0)
 
